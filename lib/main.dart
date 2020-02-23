@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:unknperson/screen/login.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() => runApp(MyApp());
-
+void main() {
+  // INicializa o valor dele por primera vez
+  // SharedPreferences.setMockInitialValues({});
+  print('Iniciando aplicativo');
+  runApp(MyApp());
+}
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
@@ -13,8 +18,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: Scaffold(
-        body: LoginScreen()),
+      home: LoginScreen(),
     );
   }
 }
