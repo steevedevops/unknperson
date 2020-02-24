@@ -10,6 +10,10 @@ import 'package:unknperson/services/api.dart';
 import 'package:unknperson/utils/formatters.dart';
 import 'package:unknperson/widget/sidebar/sidebar.dart';
 
+import '../models/Fakeperson.dart';
+import '../models/FakepersonFields.dart';
+import '../services/api.dart';
+
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key key}) : super(key: key);
   @override
@@ -21,8 +25,9 @@ class _HomeScreenState extends State<HomeScreen> {
   String email;
   bool _loadState = false;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-
+  FakepersonFields fakepersonFields  = FakepersonFields();
   List<Fakeperson> fakepersonList;
+
   int countlist = 0;
 
   @override
@@ -130,12 +135,35 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void navigateToAddperson() async {
-    bool result =
-        await Navigator.push(context, MaterialPageRoute(builder: (context) {
+    setState(() {
+      _loadState = true;
+    });
+    bool result;
+    var fakepersonfield = await Services.getnewFakeperson();
+    setState(() {
+      _loadState = true;
+    });
+    if(fakepersonfield != null){
+      result = await Navigator.push(context, MaterialPageRoute(builder: (context) {
       return FakepersonformScreen(
-        fakeperson: null,
+        fakeperson: Fakeperson(
+          model: 'fakeperson.fakeperson',
+          fakepersonfields: fakepersonfield
+        ),
       );
-    }));
+      }));
+
+    }else{
+      result = await Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return FakepersonformScreen(
+        fakeperson: Fakeperson(
+          model: 'fakeperson.fakeperson',
+          fakepersonfields: fakepersonFields
+        ),
+      );
+      }));
+    }
+
     _updatepersonListview();
     if (result == true) {}
   }
@@ -160,12 +188,13 @@ class _HomeScreenState extends State<HomeScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 CachedNetworkImage(
-                  imageUrl:
-                      "http://5e55b8c6.ngrok.io${fakepersonList[position].fakepersonfields.fpImage}",
+                  // imageUrl:"http://70c03a0d.ngrok.io${fakepersonList[position].fakepersonfields.fpImage}",
+                  imageUrl:"https://homepages.cae.wisc.edu/~ece533/images/airplane.png",
                   imageBuilder: (context, imageProvider) => Container(
-                    width: (MediaQuery.of(context).size.width / (4.7)),
+                    width: (MediaQuery.of(context).size.width / (5.7)),
+                    height: (MediaQuery.of(context).size.height / (11.7)),
                     decoration: BoxDecoration(
-                      borderRadius: new BorderRadius.circular(60),
+                      // borderRadius: new BorderRadius.circular(60),
                       image: DecorationImage(
                         image: imageProvider,
                         fit: BoxFit.cover,
@@ -256,9 +285,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                             fakepersonList[position]
                                                 .fakepersonfields
                                                 .fpBirthDate),
-                                        //    fakepersonList[position]
-                                        // .fakepersonfields
-                                        // .fpBirthDate,
                                         style: const TextStyle(
                                           fontSize: 12.0,
                                           color: Colors.black,
@@ -275,14 +301,18 @@ class _HomeScreenState extends State<HomeScreen> {
                     )),
                 Padding(
                     padding: const EdgeInsets.all(5.0),
-                    // Status 1 e criado e status 2 e baixado
+                    child: InkWell(
+                      onTap: () async {
+                        await Services.getdeleteperson(fakepersonList[position].pk);
+                        _updatepersonListview();
+                      },
                     child: Center(
                       child: Icon(
                         Icons.close,
                         size: 28.0,
                         color: Colors.grey,
                       ),
-                    )),
+                    ))),
               ],
             ),
           )),

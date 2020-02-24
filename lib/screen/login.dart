@@ -66,7 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               borderRadius: new BorderRadius.circular(23),
                             ),
                             width: MediaQuery.of(context).size.width / 1.3,
-                            height: MediaQuery.of(context).size.height / 2.0,
+                            height: 370,
                             child: Form(
                               key: _formKey,
                               child: Column(
@@ -188,12 +188,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
   _doLogin() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    // SharedPreferences.setMockInitialValues({});
     var conected = await Connectivity().checkConnectivity();
 
     setState(() {
       _loadState = true;
     });
-    
+
     if (conected != ConnectivityResult.none) {
       Map data = {"email": username.text, "password": password.text};
 
@@ -230,9 +231,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _verifyLogado() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (prefs.getBool('statuslogin')) {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => HomeScreen()));
+    try {
+      if (prefs.getBool('statuslogin')) {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+      }
+    } catch (e) {
+      print(e);
     }
   }
 }

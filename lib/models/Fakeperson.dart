@@ -9,7 +9,9 @@ class Fakeperson {
 
   Fakeperson.fromJson(Map<String, dynamic> json) {
     model = json['model'];
-    pk = json['pk'];
+    if(json['pk'] != null){
+      pk = json['pk'];
+    }
     fakepersonfields =
         json['fields'] != null ? new FakepersonFields.fromJson(json['fields']) : null;
   }
@@ -17,7 +19,10 @@ class Fakeperson {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['model'] = this.model;
-    data['pk'] = this.pk;
+
+    if(this.pk != null){
+      data['pk'] = this.pk;
+    }
     if (this.fakepersonfields != null) {
       data['fields'] = this.fakepersonfields.toJson();
     }

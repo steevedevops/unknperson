@@ -39,21 +39,19 @@ class _FakepersonformScreenState extends State<FakepersonformScreen> {
 
   @override
   Widget build(BuildContext context) {
-    nameperson.text =
-        fakeperson.pk != null ? fakeperson.fakepersonfields.fpFullName : '';
+    nameperson.text = fakeperson != null ? fakeperson.fakepersonfields.fpFullName : '';
     emailperson.text =
-        fakeperson.pk != null ? fakeperson.fakepersonfields.fpEmail : '';
-    cpfperson.text = fakeperson.pk != null
+        fakeperson != null ? fakeperson.fakepersonfields.fpEmail : '';
+    cpfperson.text = fakeperson != null
         ? Formatters.formatCPF(fakeperson.fakepersonfields.fpCpf)
         : '';
-      descriptionperson.text = fakeperson.pk != null
+      descriptionperson.text = fakeperson != null
         ? fakeperson.fakepersonfields.fpDescription
         : '';
 
-       ageperson.text = fakeperson.pk != null
+       ageperson.text = fakeperson != null
         ?  fakeperson.fakepersonfields.fpAge.toString()
         : '';
-    
 
     TextStyle textStyle = Theme.of(context).textTheme.title;
     return Scaffold(
@@ -64,7 +62,7 @@ class _FakepersonformScreenState extends State<FakepersonformScreen> {
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
             _saveData();
-            
+
           },
           backgroundColor: Theme.of(context).primaryColor,
           child: Icon(Icons.save),
@@ -97,8 +95,8 @@ class _FakepersonformScreenState extends State<FakepersonformScreen> {
                                 height: 160.3,
                                 padding: EdgeInsets.all(10.0),
                                 child: CachedNetworkImage(
-                                  imageUrl:
-                                      "http://5e55b8c6.ngrok.io${fakeperson.fakepersonfields != null ? fakeperson.fakepersonfields.fpImage : ''}",
+                                  // imageUrl: "http://70c03a0d.ngrok.io${fakeperson.fakepersonfields != null ? fakeperson.fakepersonfields.fpImage : ''}",
+                                  imageUrl: "",
                                   imageBuilder: (context, imageProvider) =>
                                       Container(
                                     width: (MediaQuery.of(context).size.width /
@@ -352,7 +350,7 @@ class _FakepersonformScreenState extends State<FakepersonformScreen> {
                                   ),
                                 ),
                                 SizedBox(
-                                  height: 20,
+                                  height: 15,
                                 ),
                                 Container(
                                   width: (MediaQuery.of(context).size.width /
@@ -407,12 +405,7 @@ class _FakepersonformScreenState extends State<FakepersonformScreen> {
       }
     } else {
       print('Salvando informacoes');
-      fakeperson.model = 'steeve';
-      fakepersonFields.fpEmail = 'steeve@gmail.com';
-      print(fakeperson.fakepersonfields.fpEmail);
-
       var result = await Services.updateFakeperson(fakeperson);
-
       if (result) {
         print('Salvo com sucesso');
         moveToLastScreen();

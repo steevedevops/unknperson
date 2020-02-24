@@ -9,7 +9,7 @@ class FakepersonFields {
   String fpLatitude;
   String fpLongitude;
   String fpDescription;
-  int user;
+  // int user;
 
   FakepersonFields(
       {this.fpGender,
@@ -22,7 +22,8 @@ class FakepersonFields {
       this.fpLatitude,
       this.fpLongitude,
       this.fpDescription,
-      this.user});
+      // this.user
+      });
 
   FakepersonFields.fromJson(Map<String, dynamic> json) {
     fpGender = json['fp_gender'];
@@ -35,7 +36,7 @@ class FakepersonFields {
     fpLatitude = json['fp_latitude'];
     fpLongitude = json['fp_longitude'];
     fpDescription = json['fp_description'];
-    user = json['User'];
+    // user = json['User'];
   }
 
   Map<String, dynamic> toJson() {
@@ -50,7 +51,7 @@ class FakepersonFields {
     data['fp_latitude'] = this.fpLatitude;
     data['fp_longitude'] = this.fpLongitude;
     data['fp_description'] = this.fpDescription;
-    data['User'] = this.user;
+    // data['User'] = this.user;
     return data;
   }
 }
