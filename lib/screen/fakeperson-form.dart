@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:unknperson/models/Fakeperson.dart';
+import 'package:unknperson/models/FakepersonFields.dart';
 import 'package:unknperson/services/api.dart';
 import 'package:unknperson/utils/formatters.dart';
 
@@ -15,6 +16,7 @@ class FakepersonformScreen extends StatefulWidget {
 
 class _FakepersonformScreenState extends State<FakepersonformScreen> {
   Fakeperson fakeperson = Fakeperson();
+  FakepersonFields fakepersonFields = FakepersonFields();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   var maskFormatter = new MaskTextInputFormatter(
       mask: '###.###.###-##', filter: {"#": RegExp(r'[0-9]')});
@@ -44,6 +46,14 @@ class _FakepersonformScreenState extends State<FakepersonformScreen> {
     cpfperson.text = fakeperson.pk != null
         ? Formatters.formatCPF(fakeperson.fakepersonfields.fpCpf)
         : '';
+      descriptionperson.text = fakeperson.pk != null
+        ? fakeperson.fakepersonfields.fpDescription
+        : '';
+
+       ageperson.text = fakeperson.pk != null
+        ?  fakeperson.fakepersonfields.fpAge.toString()
+        : '';
+    
 
     TextStyle textStyle = Theme.of(context).textTheme.title;
     return Scaffold(
@@ -84,12 +94,11 @@ class _FakepersonformScreenState extends State<FakepersonformScreen> {
                               child: Container(
                                 width:
                                     (MediaQuery.of(context).size.width / (2.6)),
-                                height: (MediaQuery.of(context).size.height /
-                                    (4.9)),
+                                height: 160.3,
                                 padding: EdgeInsets.all(10.0),
                                 child: CachedNetworkImage(
                                   imageUrl:
-                                      "http://a5e953f8.ngrok.io${fakeperson.fakepersonfields.fpImage}",
+                                      "http://5e55b8c6.ngrok.io${fakeperson.fakepersonfields != null ? fakeperson.fakepersonfields.fpImage : ''}",
                                   imageBuilder: (context, imageProvider) =>
                                       Container(
                                     width: (MediaQuery.of(context).size.width /
@@ -108,8 +117,10 @@ class _FakepersonformScreenState extends State<FakepersonformScreen> {
                                   errorWidget: (context, url, error) =>
                                       Container(
                                     width: (MediaQuery.of(context).size.width /
-                                        (4.3)),
+                                        (4.7)),
                                     decoration: BoxDecoration(
+                                      borderRadius:
+                                          new BorderRadius.circular(70),
                                         image: DecorationImage(
                                             image: AssetImage(
                                                 'lib/assets/images/no-image.jpg'),
@@ -396,6 +407,18 @@ class _FakepersonformScreenState extends State<FakepersonformScreen> {
       }
     } else {
       print('Salvando informacoes');
+      fakeperson.model = 'steeve';
+      fakepersonFields.fpEmail = 'steeve@gmail.com';
+      print(fakeperson.fakepersonfields.fpEmail);
+
+      var result = await Services.updateFakeperson(fakeperson);
+
+      if (result) {
+        print('Salvo com sucesso');
+        moveToLastScreen();
+      } else {
+        print('Nao foi posivel atualizar registro');
+      }
     }
   }
 }

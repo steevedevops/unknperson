@@ -1,10 +1,6 @@
-import 'dart:developer';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_masked_text/flutter_masked_text.dart';
-import 'package:intl/intl.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unknperson/models/Fakeperson.dart';
@@ -54,7 +50,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 drawer: Sidebar(username: this.name, email: this.email),
                 floatingActionButton: FloatingActionButton(
-                  onPressed: () async {},
+                  onPressed: () async {
+                    navigateToAddperson();
+                  },
                   backgroundColor: Theme.of(context).primaryColor,
                   child: Icon(Icons.add),
                 ),
@@ -131,18 +129,16 @@ class _HomeScreenState extends State<HomeScreen> {
         ));
   }
 
-  // void navigateToAddVistoraItemsDetalhes() async {
-  //   bool result =
-  //       await Navigator.push(context, MaterialPageRoute(builder: (context) {
-  //     return VisItemsDetalhesformScreen(
-  //       vistoriaItemsDetalhes: null,
-  //       title: 'Adicionar Detalhes',
-  //       vistoriaItems: vistoriaItems,
-  //     );
-  //   }));
-  //   _updateVistoriaDetalhesListView();
-  //   if (result == true) {}
-  // }
+  void navigateToAddperson() async {
+    bool result =
+        await Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return FakepersonformScreen(
+        fakeperson: null,
+      );
+    }));
+    _updatepersonListview();
+    if (result == true) {}
+  }
 
   Widget _cardListpendentes(BuildContext context, int position) {
     return Container(
@@ -165,7 +161,7 @@ class _HomeScreenState extends State<HomeScreen> {
               children: <Widget>[
                 CachedNetworkImage(
                   imageUrl:
-                      "http://a5e953f8.ngrok.io${fakepersonList[position].fakepersonfields.fpImage}",
+                      "http://5e55b8c6.ngrok.io${fakepersonList[position].fakepersonfields.fpImage}",
                   imageBuilder: (context, imageProvider) => Container(
                     width: (MediaQuery.of(context).size.width / (4.7)),
                     decoration: BoxDecoration(

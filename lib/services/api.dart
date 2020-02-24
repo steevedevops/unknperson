@@ -7,7 +7,7 @@ import 'package:unknperson/models/Usuario.dart';
 import 'package:http/http.dart' as http;
 
 class Services {
-  static final url_api = 'http://a5e953f8.ngrok.io';
+  static final url_api = 'http://5e55b8c6.ngrok.io';
 
   static Future<Usuario> getlogin(Map data) async {
     var _usuario;
