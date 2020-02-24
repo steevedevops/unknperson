@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unknperson/models/Fakeperson.dart';
+import 'package:unknperson/screen/fakeperson-form.dart';
 import 'package:unknperson/screen/login.dart';
 import 'package:unknperson/services/api.dart';
 import 'package:unknperson/utils/formatters.dart';
@@ -109,8 +110,17 @@ class _HomeScreenState extends State<HomeScreen> {
           itemCount: countlist,
           itemBuilder: (BuildContext context, int position) {
             return InkWell(
-                onTap: () {
+                onTap: () async {
                   // formatnumber(position);
+
+                  bool result = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => FakepersonformScreen(
+                                fakeperson: fakepersonList[position],
+                              )));
+                  _updatepersonListview();
+                  if (result == true) {/*Faca alima coisa*/}
                 },
                 child: Container(
                     child: Padding(
@@ -120,6 +130,19 @@ class _HomeScreenState extends State<HomeScreen> {
           },
         ));
   }
+
+  // void navigateToAddVistoraItemsDetalhes() async {
+  //   bool result =
+  //       await Navigator.push(context, MaterialPageRoute(builder: (context) {
+  //     return VisItemsDetalhesformScreen(
+  //       vistoriaItemsDetalhes: null,
+  //       title: 'Adicionar Detalhes',
+  //       vistoriaItems: vistoriaItems,
+  //     );
+  //   }));
+  //   _updateVistoriaDetalhesListView();
+  //   if (result == true) {}
+  // }
 
   Widget _cardListpendentes(BuildContext context, int position) {
     return Container(
@@ -148,9 +171,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     decoration: BoxDecoration(
                       borderRadius: new BorderRadius.circular(60),
                       image: DecorationImage(
-                          image: imageProvider,
-                          fit: BoxFit.cover,
-                          ),
+                        image: imageProvider,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                   placeholder: (context, url) => CircularProgressIndicator(),
@@ -203,7 +226,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 AutoSizeText(
                                   Formatters.formatCPF(fakepersonList[position]
                                       .fakepersonfields
-                                      .fpCpf),                                  
+                                      .fpCpf),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   style: const TextStyle(
@@ -233,13 +256,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                         width: 5,
                                       ),
                                       Text(
-
-                                         Formatters.formatDateString(fakepersonList[position]
-                                      .fakepersonfields
-                                      .fpBirthDate),
-                                      //    fakepersonList[position]
-                                      // .fakepersonfields
-                                      // .fpBirthDate,
+                                        Formatters.formatDateString(
+                                            fakepersonList[position]
+                                                .fakepersonfields
+                                                .fpBirthDate),
+                                        //    fakepersonList[position]
+                                        // .fakepersonfields
+                                        // .fpBirthDate,
                                         style: const TextStyle(
                                           fontSize: 12.0,
                                           color: Colors.black,

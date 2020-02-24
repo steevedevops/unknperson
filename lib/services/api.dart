@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unknperson/models/Fakeperson.dart';
+import 'package:unknperson/models/FakepersonFields.dart';
 import 'package:unknperson/models/Usuario.dart';
 import 'package:http/http.dart' as http;
 
@@ -15,8 +16,6 @@ class Services {
     var response = await http.post(url_api + '/api/login/', headers: header, body: _body);
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.clear();
-    
-    print('========================${response.statusCode}');
 
     Map mapResponse = json.decode(response.body);
 
@@ -89,5 +88,34 @@ class Services {
     }
     await prefs.commit();
     return fakepersonList;
+  }
+
+
+  static Future<bool> updateFakeperson(Fakeperson fakeperson) async {
+
+    print(fakeperson.toJson());
+    // return true;
+    
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var header = {
+      'Content-Type': 'application/json',
+      'Cookie': 'sessionid=${prefs.getString('sessionid')}' 
+    };
+    var _body = json.encode(fakeperson.toJson());
+    
+    var response = await http.put(url_api + '/api/userfakeperson/', headers: header, body: _body);
+
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      return true;
+    } else if (response.statusCode == 403) {
+      Map mapResponse = json.decode(response.body);
+      prefs.setBool('statuslogin', false);
+      prefs.setString('msg_login', mapResponse['msg']);    
+      await prefs.commit(); 
+      return false;
+    }else{
+      return false;
+    } 
   }
 }
