@@ -5,7 +5,7 @@ class Formatters {
   
   static String formatCPF(String value){
     var cpfController = new MaskedTextController(text: '$value', mask: '000.000.000-00');
-    cpfController.updateMask('000.000.0000-0');
+    cpfController.updateMask('000.000.000-00');
     return cpfController.text;
   }
 

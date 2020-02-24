@@ -118,4 +118,103 @@ class Services {
       return false;
     } 
   }
+
+  static Future<String> getnewCpf() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var header = {
+      'Content-Type': 'application/json',
+    };    
+    var response = await http.get(url_api + '/api/cpf/', headers: header);
+
+    print(response.statusCode);
+
+    Map mapResponse = json.decode(response.body);
+    if (response.statusCode == 200) {
+      return mapResponse['cpf'];
+    } else if (response.statusCode == 403) {
+      prefs.setBool('statuslogin', false);
+      prefs.setString('msg_login', mapResponse['msg']);    
+      await prefs.commit(); 
+      return '';
+    }else{
+      return '';
+    } 
+  }
+
+
+  static Future<String> getnewName() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var header = {
+      'Content-Type': 'application/json',
+    };    
+    var response = await http.get(url_api + '/api/fullName/?gender=M', headers: header);
+
+    print(response.statusCode);
+
+    Map mapResponse = json.decode(response.body);
+    if (response.statusCode == 200) {
+      return mapResponse['fullName'];
+    } else if (response.statusCode == 403) {
+      prefs.setBool('statuslogin', false);
+      prefs.setString('msg_login', mapResponse['msg']);    
+      await prefs.commit(); 
+      return '';
+    }else{
+      return '';
+    } 
+  }
+
+  static Future<String> getEmail(String name) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var header = {
+      'Content-Type': 'application/json',
+    };    
+    var response = await http.get(url_api + '/api/email/?name=${name}', headers: header);
+
+    print(response.statusCode);
+
+    Map mapResponse = json.decode(response.body);
+    if (response.statusCode == 200) {
+      return mapResponse['email'];
+    } else if (response.statusCode == 403) {
+      prefs.setBool('statuslogin', false);
+      prefs.setString('msg_login', mapResponse['msg']);    
+      await prefs.commit(); 
+      return '';
+    }else{
+      return '';
+    } 
+  }
+
+
+
+  static Future<String> getRandomeimg() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var header = {
+      'Content-Type': 'application/json',
+    };    
+    var response = await http.get(url_api + '/api/image/?gender=M', headers: header);
+
+    print(response.statusCode);
+
+    Map mapResponse = json.decode(response.body);
+    if (response.statusCode == 200) {
+      return mapResponse['image'];
+    } else if (response.statusCode == 403) {
+      prefs.setBool('statuslogin', false);
+      prefs.setString('msg_login', mapResponse['msg']);    
+      await prefs.commit(); 
+      return '';
+    }else{
+      return '';
+    } 
+  }
+
+
+
+
+  
+
+
+  
 }

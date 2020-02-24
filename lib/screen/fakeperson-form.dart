@@ -17,7 +17,7 @@ class _FakepersonformScreenState extends State<FakepersonformScreen> {
   Fakeperson fakeperson = Fakeperson();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   var maskFormatter = new MaskTextInputFormatter(
-      mask: '###.###.####-##', filter: {"#": RegExp(r'[0-9]')});
+      mask: '###.###.###-##', filter: {"#": RegExp(r'[0-9]')});
 
   TextEditingController nameperson = TextEditingController();
   TextEditingController emailperson = TextEditingController();
@@ -72,35 +72,50 @@ class _FakepersonformScreenState extends State<FakepersonformScreen> {
                               0.0,
                               0.0)),
                       Center(
-                          child: Container(
-                        width: (MediaQuery.of(context).size.width / (2.6)),
-                        height: (MediaQuery.of(context).size.height / (4.9)),
-                        padding: EdgeInsets.all(10.0),
-                        child: CachedNetworkImage(
-                          imageUrl:
-                              "http://d4169f38.ngrok.io${fakeperson.fakepersonfields.fpImage}",
-                          imageBuilder: (context, imageProvider) => Container(
-                            width: (MediaQuery.of(context).size.width / (4.7)),
-                            decoration: BoxDecoration(
-                              borderRadius: new BorderRadius.circular(70),
-                              image: DecorationImage(
-                                image: imageProvider,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                          placeholder: (context, url) =>
-                              CircularProgressIndicator(),
-                          errorWidget: (context, url, error) => Container(
-                            width: (MediaQuery.of(context).size.width / (4.3)),
-                            decoration: BoxDecoration(
-                                image: DecorationImage(
-                                    image: AssetImage(
-                                        'lib/assets/images/no-image.jpg'),
-                                    fit: BoxFit.fill)),
-                          ),
-                        ),
-                      )),
+                          child: InkWell(
+                              onTap: () async {
+                                var resimg = await Services.getRandomeimg();
+
+                                setState(() {
+                                  fakeperson.fakepersonfields.fpImage = resimg;
+                                });
+                              },
+                              child: Container(
+                                width:
+                                    (MediaQuery.of(context).size.width / (2.6)),
+                                height: (MediaQuery.of(context).size.height /
+                                    (4.9)),
+                                padding: EdgeInsets.all(10.0),
+                                child: CachedNetworkImage(
+                                  imageUrl:
+                                      "http://a5e953f8.ngrok.io${fakeperson.fakepersonfields.fpImage}",
+                                  imageBuilder: (context, imageProvider) =>
+                                      Container(
+                                    width: (MediaQuery.of(context).size.width /
+                                        (4.7)),
+                                    decoration: BoxDecoration(
+                                      borderRadius:
+                                          new BorderRadius.circular(70),
+                                      image: DecorationImage(
+                                        image: imageProvider,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                  placeholder: (context, url) =>
+                                      CircularProgressIndicator(),
+                                  errorWidget: (context, url, error) =>
+                                      Container(
+                                    width: (MediaQuery.of(context).size.width /
+                                        (4.3)),
+                                    decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                            image: AssetImage(
+                                                'lib/assets/images/no-image.jpg'),
+                                            fit: BoxFit.fill)),
+                                  ),
+                                ),
+                              ))),
                       SizedBox(
                         height: 32,
                       ),
@@ -113,8 +128,9 @@ class _FakepersonformScreenState extends State<FakepersonformScreen> {
                                   width: (MediaQuery.of(context).size.width /
                                       (1.2)),
                                   child: TextFormField(
-                                    onChanged: (value){
-                                      fakeperson.fakepersonfields.fpFullName = value;
+                                    onChanged: (value) {
+                                      fakeperson.fakepersonfields.fpFullName =
+                                          value;
                                     },
                                     validator: (value) {
                                       if (value.isEmpty) {
@@ -131,7 +147,15 @@ class _FakepersonformScreenState extends State<FakepersonformScreen> {
                                             borderRadius:
                                                 BorderRadius.circular(5.0)),
                                         suffixIcon: InkWell(
-                                            onTap: () {},
+                                            onTap: () async {
+                                              var resfulname =
+                                                  await Services.getnewName();
+
+                                              setState(() {
+                                                fakeperson.fakepersonfields
+                                                    .fpFullName = resfulname;
+                                              });
+                                            },
                                             child: Container(
                                               height: (MediaQuery.of(context)
                                                       .size
@@ -159,8 +183,9 @@ class _FakepersonformScreenState extends State<FakepersonformScreen> {
                                   width: (MediaQuery.of(context).size.width /
                                       (1.2)),
                                   child: TextFormField(
-                                    onChanged: (value){
-                                      fakeperson.fakepersonfields.fpEmail = value;
+                                    onChanged: (value) {
+                                      fakeperson.fakepersonfields.fpEmail =
+                                          value;
                                     },
                                     validator: (value) {
                                       if (value.isEmpty) {
@@ -177,7 +202,17 @@ class _FakepersonformScreenState extends State<FakepersonformScreen> {
                                             borderRadius:
                                                 BorderRadius.circular(5.0)),
                                         suffixIcon: InkWell(
-                                            onTap: () {},
+                                            onTap: () async {
+                                              var resemail =
+                                                  await Services.getEmail(
+                                                      fakeperson
+                                                          .fakepersonfields
+                                                          .fpFullName);
+                                              setState(() {
+                                                fakeperson.fakepersonfields
+                                                    .fpEmail = resemail;
+                                              });
+                                            },
                                             child: Container(
                                               height: (MediaQuery.of(context)
                                                       .size
@@ -215,7 +250,8 @@ class _FakepersonformScreenState extends State<FakepersonformScreen> {
                                     keyboardType: TextInputType.number,
                                     onChanged: (value) {
                                       print(maskFormatter.getUnmaskedText());
-                                      fakeperson.fakepersonfields.fpCpf = maskFormatter.getUnmaskedText();
+                                      fakeperson.fakepersonfields.fpCpf =
+                                          maskFormatter.getUnmaskedText();
                                     },
                                     controller: cpfperson,
                                     style: textStyle,
@@ -226,7 +262,15 @@ class _FakepersonformScreenState extends State<FakepersonformScreen> {
                                             borderRadius:
                                                 BorderRadius.circular(5.0)),
                                         suffixIcon: InkWell(
-                                            onTap: () {},
+                                            onTap: () async {
+                                              var rescpf =
+                                                  await Services.getnewCpf();
+
+                                              setState(() {
+                                                fakeperson.fakepersonfields
+                                                    .fpCpf = rescpf;
+                                              });
+                                            },
                                             child: Container(
                                               height: (MediaQuery.of(context)
                                                       .size
@@ -255,8 +299,9 @@ class _FakepersonformScreenState extends State<FakepersonformScreen> {
                                       (1.2)),
                                   child: TextFormField(
                                     keyboardType: TextInputType.number,
-                                    onChanged: (value){
-                                      fakeperson.fakepersonfields.fpAge = int.parse(value);
+                                    onChanged: (value) {
+                                      fakeperson.fakepersonfields.fpAge =
+                                          int.parse(value);
                                     },
                                     validator: (value) {
                                       if (value.isEmpty) {
@@ -305,8 +350,9 @@ class _FakepersonformScreenState extends State<FakepersonformScreen> {
                                   child: TextFormField(
                                     keyboardType: TextInputType.multiline,
                                     maxLines: 50,
-                                    onChanged: (value){
-                                      fakeperson.fakepersonfields.fpDescription = value;
+                                    onChanged: (value) {
+                                      fakeperson.fakepersonfields
+                                          .fpDescription = value;
                                     },
                                     validator: (value) {
                                       if (value.isEmpty) {
@@ -332,19 +378,17 @@ class _FakepersonformScreenState extends State<FakepersonformScreen> {
                 ))));
   }
 
-
   Future<void> _saveData() async {
-    if(fakeperson.pk != null){
+    if (fakeperson.pk != null) {
       print('Atualizando informacoes ${fakeperson.fakepersonfields.fpCpf} ');
       var result = await Services.updateFakeperson(fakeperson);
 
-      if(result){
+      if (result) {
         print('Atualizado com sucesso');
-      }else{
+      } else {
         print('Nao foi posivel atualizar registro');
       }
-
-    }else{
+    } else {
       print('Salvando informacoes');
     }
   }
