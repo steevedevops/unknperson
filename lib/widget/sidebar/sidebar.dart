@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:unknperson/screen/login.dart';
+import 'package:unknperson/services/api.dart';
 import 'package:unknperson/widget/sidebar/sidbar_items.dart';
 
 class Sidebar extends StatelessWidget {
@@ -65,7 +68,18 @@ class Sidebar extends StatelessWidget {
                     endIndent: 20,
                     indent: 20,
                   ),
-                  SidebarItem(null, "Sair", () {}),
+                  SidebarItem(null, "Sair", () async {
+                    SharedPreferences prefs = await SharedPreferences.getInstance();
+                    try {
+                      var usuario = await Services.getlogout();                                      
+                      Navigator.push(
+                          context, MaterialPageRoute(builder: (context) => LoginScreen()));
+                      
+                    } catch (e) {
+                      print(e);
+                    }
+                                        
+                  }),
                 ],
               ),
             ))),
