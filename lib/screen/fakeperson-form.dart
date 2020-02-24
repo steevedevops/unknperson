@@ -54,6 +54,7 @@ class _FakepersonformScreenState extends State<FakepersonformScreen> {
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
             _saveData();
+            
           },
           backgroundColor: Theme.of(context).primaryColor,
           child: Icon(Icons.save),
@@ -378,6 +379,10 @@ class _FakepersonformScreenState extends State<FakepersonformScreen> {
                 ))));
   }
 
+  void moveToLastScreen() {
+    Navigator.pop(context, true);
+  }
+
   Future<void> _saveData() async {
     if (fakeperson.pk != null) {
       print('Atualizando informacoes ${fakeperson.fakepersonfields.fpCpf} ');
@@ -385,6 +390,7 @@ class _FakepersonformScreenState extends State<FakepersonformScreen> {
 
       if (result) {
         print('Atualizado com sucesso');
+        moveToLastScreen();
       } else {
         print('Nao foi posivel atualizar registro');
       }
