@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unknperson/services/api.dart';
+import 'package:unknperson/src/screen/home.dart';
 
 class UserinformationsScreen extends StatefulWidget {
   @override
@@ -26,7 +27,8 @@ class _UserinformationsScreenState extends State<UserinformationsScreen> {
   @override
   Widget build(BuildContext context) {
     TextStyle textStyle = Theme.of(context).textTheme.title;
-    return ModalProgressHUD(
+    return WillPopScope(
+    child:ModalProgressHUD(
       child: Scaffold(
           key: _scaffoldKey,
           appBar: AppBar(title: Text('Trocar dados do usuario')),
@@ -126,6 +128,8 @@ class _UserinformationsScreenState extends State<UserinformationsScreen> {
                 ))),
           ))),
       inAsyncCall: _loadState,
+    ),
+    onWillPop: () => _exitApp(context),
     );
   }
 
@@ -168,6 +172,28 @@ class _UserinformationsScreenState extends State<UserinformationsScreen> {
     });
   }
 
+  Future<bool> _exitApp(BuildContext context) {
+  return showDialog(
+        context: context,
+        barrierDismissible: false,
+        child: new AlertDialog(
+          title: new Text('Saindo!',style: TextStyle(color: Color(0xFFfc5185),)),
+          content: new Text('Você deseja sair das configurações do usuário...'),
+          actions: <Widget>[
+            new FlatButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: new Text('Não', style: TextStyle(color: Theme.of(context).primaryColor,),),
+            ),
+            new FlatButton(
+              onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => HomeScreen())),
+              child: new Text('Sim',  style: TextStyle(color: Theme.of(context).primaryColor,),),
+            ),  
+          ],
+        ),
+      ) ??
+      false;
+  }
+
   void showInSnackBar(BuildContext context, String value) {
     final snackBar = SnackBar(
       content: Text(
@@ -186,7 +212,7 @@ class _UserinformationsScreenState extends State<UserinformationsScreen> {
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Sucesso!'),
+          title: Text('Sucesso!',style: TextStyle(color: Color(0xFFfc5185)),),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
@@ -196,7 +222,7 @@ class _UserinformationsScreenState extends State<UserinformationsScreen> {
           ),
           actions: <Widget>[
             FlatButton(
-              child: Text('Ok'),
+              child: Text('Ok',style: TextStyle(color: Theme.of(context).primaryColor,)),
               onPressed: () {
                 Navigator.of(context).pop();
               },

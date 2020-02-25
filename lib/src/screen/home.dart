@@ -170,8 +170,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   style: TextStyle(color: Colors.white),
                 ),
                 onPressed: () async {
+                  setState(() {
+                    _loadState = true;
+                  });
                   Navigator.pop(context);
-                  await Services.getdeleteperson(pk);
+                  await Services.getdeleteperson(pk);                  
                   _updatepersonListview();
                   
                 },
@@ -393,6 +396,27 @@ class _HomeScreenState extends State<HomeScreen> {
           )),
     );
   }
+
+//   Future<bool> _exitApp(BuildContext context) {
+//   return showDialog(
+//         context: context,
+//         child: new AlertDialog(
+//           title: new Text('Do you want to exit this application?'),
+//           // content: new Text('We hate to see you leave...'),
+//           actions: <Widget>[
+//             new FlatButton(
+//               onPressed: () => Navigator.of(context).pop(false),
+//               child: new Text('No'),
+//             ),
+//             new FlatButton(
+//               onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => HomeScreen())),
+//               child: new Text('Yes'),
+//             ),
+//           ],
+//         ),
+//       ) ??
+//       false;
+// }
 
   void _scrollListener() {
     if (_scrollController.offset >=

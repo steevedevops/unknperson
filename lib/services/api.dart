@@ -51,17 +51,13 @@ class Services {
       'Set-Cookie': 'sessionid=${prefs.getString('sessionid')}'
     };
     var response = await http.get(url_api + '/api/logout/', headers: header);
-    prefs.clear();
-    print(response.statusCode);
+
     Map mapResponse = json.decode(response.body);
     if (response.statusCode == 200) {
-      prefs.setBool('statuslogin', false);
       _usuario = Usuario.fromJson(mapResponse);
     } else {
-      prefs.setBool('statuslogin', false);
       _usuario = Usuario.fromJson(mapResponse);
     }
-    await prefs.commit();
     return _usuario;
   }
 
@@ -78,7 +74,6 @@ class Services {
       var response = await http.get(
           url_api + '/api/userfakeperson/?search=&limit=10000',
           headers: header);
-      // final response = await http.get('https://jsonplaceholder.typicode.com/albums/1');
       Map mapResponse = json.decode(response.body);
 
       if (response.statusCode == 200) {
@@ -320,8 +315,6 @@ class Services {
     return false;
   }
 
-
-
   static Future<Map> getUserinformation() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var header = {
@@ -329,13 +322,6 @@ class Services {
       'Cookie': 'sessionid=${prefs.getString('sessionid')}'
     };
 
-    // "first_name":"Fábio viado",
-		// "last_name": "Telmo Machado Dornel",
-		// "username":"dornel.fabio2@gmail.com"
-
-    // "username": "steeve@metasig.com.br",
-    // "first_name": "Steeve",
-    // "last_name": "Gay",
     var response = await http.get(url_api + '/api/profile/', headers: header);
     Map mapResponse = json.decode(response.body);
 

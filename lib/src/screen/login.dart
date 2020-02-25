@@ -31,8 +31,8 @@ class _LoginScreenState extends State<LoginScreen> {
     TextStyle textStyle = Theme.of(context).textTheme.title;
 
     // username.text = "dornel.fabio2@gmail.com";
-    // username.text = "steeve@metasig.com.br";
-    // password.text = "mastermaster";
+    username.text = "steeve@metasig.com.br";
+    password.text = "mastermaster";
     return Scaffold(
       key: _scaffoldKey,
       body: ModalProgressHUD(
@@ -106,6 +106,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       style: textStyle,
                                       decoration: InputDecoration(
                                           labelStyle: textStyle,
+                                          labelText: 'Username',
                                           border: OutlineInputBorder(
                                               borderRadius:
                                                   BorderRadius.circular(5.0))),
@@ -139,6 +140,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       style: textStyle,
                                       decoration: InputDecoration(
                                           labelStyle: textStyle,
+                                          labelText: 'Password',
                                           border: OutlineInputBorder(
                                               borderRadius:
                                                   BorderRadius.circular(5.0))),
@@ -235,13 +237,33 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _verifyLogado() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    if (prefs.getString('mobileclose') != null) {
+      prefs.remove('mobileclose');
+      setState(() {
+        _loadState = true;
+      });
+      try {
+        await Services.getlogout();
+        print('Saindo do aplicativo');
+      } catch (e) {
+        setState(() {
+          _loadState = false;
+        });
+        showInSnackBar(context, e);
+      }
+       setState(() {
+        _loadState = false;
+      });
+    }
+    
     try {
       if (prefs.getBool('statuslogin')) {
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => HomeScreen()));
       }
     } catch (e) {
-      print(e);
+      showInSnackBar(context, e);
     }
   }
 }

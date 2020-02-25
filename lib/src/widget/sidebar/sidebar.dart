@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:unknperson/src/screen/configuracao.dart';
 import 'package:unknperson/src/screen/home.dart';
 import 'package:unknperson/src/screen/login.dart';
 import 'package:unknperson/services/api.dart';
@@ -10,7 +11,7 @@ import 'package:unknperson/src/widget/sidebar/sidbar_items.dart';
 class Sidebar extends StatelessWidget {
   String username;
   String email;
-  Sidebar({this.username, this.email});
+  Sidebar({this.username, this.email});  
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -36,13 +37,14 @@ class Sidebar extends StatelessWidget {
                     height: 32,
                   ),
                   InkWell(
-                      onTap: () {
-                        Navigator.pop(context);
-                        Navigator.push(
+                      onTap: () async {
+                        bool result = await Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
                                     UserinformationsScreen()));
+                          if (result == true) {
+                          }
                       },
                       child: ListTile(
                         title: Text('${this.username}',
@@ -95,20 +97,23 @@ class Sidebar extends StatelessWidget {
                     endIndent: 20,
                     indent: 20,
                   ),
-                  SidebarItem(Icons.settings, "Configurações", () {}),
+                  SidebarItem(Icons.settings, "Configurações", () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ConfiguracaoScreen()));
+                  }),
                   SidebarItem(Icons.exit_to_app, "Sair", () async {
-                    SharedPreferences prefs =
-                        await SharedPreferences.getInstance();
-                    try {
-                      var usuario = await Services.getlogout();
-                      Navigator.pop(context);
-                      Navigator.push(
+                      SharedPreferences prefs = await SharedPreferences.getInstance();
+                      prefs.clear();
+                      await prefs.setBool('statuslogin', false);
+                      await prefs.setString('mobileclose', 'true');
+                      await prefs.commit();
+                     Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => LoginScreen()));
-                    } catch (e) {
-                      print(e);
-                    }
+                              builder: (context) => LoginScreen()));                  
                   }),
                 ],
               ),

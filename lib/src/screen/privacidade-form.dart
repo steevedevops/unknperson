@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unknperson/services/api.dart';
+import 'package:unknperson/src/screen/home.dart';
 
 class PrivacidadeScreen extends StatefulWidget {
   @override
@@ -18,8 +19,9 @@ class _PrivacidadeScreenState extends State<PrivacidadeScreen> {
   @override
   Widget build(BuildContext context) {
     TextStyle textStyle = Theme.of(context).textTheme.title;
-    return ModalProgressHUD(
+    return WillPopScope(
     
+    child:ModalProgressHUD(
     child:
     
     Scaffold(
@@ -103,7 +105,8 @@ class _PrivacidadeScreenState extends State<PrivacidadeScreen> {
         )
         )
         ), inAsyncCall: _loadState,
-        );
+        ),onWillPop: () => _exitApp(context),
+      );
   }
 
   Future<void> _updatePassword() async {
@@ -127,6 +130,28 @@ class _PrivacidadeScreenState extends State<PrivacidadeScreen> {
      setState(() {
      _loadState = false;
     });
+  }
+
+  Future<bool> _exitApp(BuildContext context) {
+  return showDialog(
+        context: context,
+        barrierDismissible: false,
+        child: new AlertDialog(
+          title: new Text('Saindo!',style: TextStyle(color: Color(0xFFfc5185),)),
+          content: new Text('Você deseja sair de esta tela...'),
+          actions: <Widget>[
+            new FlatButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: new Text('Não', style: TextStyle(color: Theme.of(context).primaryColor,),),
+            ),
+            new FlatButton(
+              onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => HomeScreen())),
+              child: new Text('Sim',  style: TextStyle(color: Theme.of(context).primaryColor,),),
+            ),  
+          ],
+        ),
+      ) ??
+      false;
   }
 
   void showInSnackBar(BuildContext context, String value) {
