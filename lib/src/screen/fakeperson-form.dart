@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -8,6 +9,7 @@ import 'package:unknperson/models/Fakeperson.dart';
 import 'package:unknperson/models/FakepersonFields.dart';
 import 'package:unknperson/services/api.dart';
 import 'package:unknperson/utils/formatters.dart';
+import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 
 class FakepersonformScreen extends StatefulWidget {
   Fakeperson fakeperson = Fakeperson();
@@ -19,11 +21,14 @@ class FakepersonformScreen extends StatefulWidget {
 class _FakepersonformScreenState extends State<FakepersonformScreen> {
   Fakeperson fakeperson = Fakeperson();
   String url_api;
+  String dateBirth;
   FakepersonFields fakepersonFields = FakepersonFields();
   final _formKey = GlobalKey<FormState>();
   var maskFormatter = new MaskTextInputFormatter(
       mask: '###.###.###-##', filter: {"#": RegExp(r'[0-9]')});
 
+  final format = DateFormat("dd/MM/yyyy");
+  
   bool _loadStat = false;
   TextEditingController nameperson = TextEditingController();
   TextEditingController emailperson = TextEditingController();
@@ -31,6 +36,8 @@ class _FakepersonformScreenState extends State<FakepersonformScreen> {
   TextEditingController ageperson = TextEditingController();
   TextEditingController descriptionperson = TextEditingController();
   TextEditingController genderperson = TextEditingController();
+  TextEditingController birthdatePerson = TextEditingController();
+  
 
   @override
   void initState() {
@@ -56,6 +63,10 @@ class _FakepersonformScreenState extends State<FakepersonformScreen> {
 
     ageperson.text =
         fakeperson != null ? fakeperson.fakepersonfields.fpAge.toString() : '';
+
+
+    birthdatePerson.text =
+        fakeperson != null ? Formatters.formatDateString(fakeperson.fakepersonfields.fpBirthDate) : '';
 
     TextStyle textStyle = Theme.of(context).textTheme.title;
     return ModalProgressHUD(
@@ -387,9 +398,105 @@ class _FakepersonformScreenState extends State<FakepersonformScreen> {
                                               ))),
                                     ),
                                   ),
+
+                                  // Container(
+                                    // width: (MediaQuery.of(context).size.width /
+                                    //     (1.2)),
+                                      
+                                  //   child: TextFormField(
+                                  //     onChanged: (value) {
+                                  //       fakeperson.fakepersonfields.fpEmail =
+                                  //           value;
+                                  //     },
+                                  //     validator: (value) {
+                                  //       if (value.isEmpty) {
+                                  //         return;
+                                  //       }
+                                  //       return null;
+                                  //     },
+                                  //     controller: birthdatePerson,
+                                  //     style: textStyle,
+                                  //     decoration: InputDecoration(
+                                  //         labelText: 'BirthDate',
+                                  //         labelStyle: textStyle,
+                                  //         border: OutlineInputBorder(
+                                  //             borderRadius:
+                                  //                 BorderRadius.circular(5.0)),
+                                  //         suffixIcon: InkWell(
+                                  //             onTap: () async {
+                                  //               setState(() {
+                                  //                 _loadStat = true;
+                                  //               });
+                                  //               var resage =
+                                  //                   await Services.getnewAge();
+                                  //               setState(() {
+                                  //                 _loadStat = false;
+                                  //                 fakeperson.fakepersonfields
+                                  //                     .fpAge = resage['age'];
+                                  //                 fakeperson.fakepersonfields
+                                  //                         .fpBirthDate =
+                                  //                     resage['birthDate'];
+                                  //               });
+                                  //             },
+                                  //             child: Container(
+                                  //               height: (MediaQuery.of(context)
+                                  //                       .size
+                                  //                       .height /
+                                  //                   12.4),
+                                  //               decoration: BoxDecoration(
+                                  //                 border: Border(
+                                  //                   left: BorderSide(
+                                  //                     color: Colors.black38,
+                                  //                     width: 1,
+                                  //                   ),
+                                  //                 ),
+                                  //               ),
+                                  //               child: Icon(
+                                  //                 Icons.refresh,
+                                  //                 color: Color(0xFFfc5185),
+                                  //                 size: 25.0,
+                                  //               ),
+                                  //             ))),
+                                  //   ),
+                                  // ),
+
+                                  // Container(
+                                  //   width: (MediaQuery.of(context).size.width /
+                                  //       (1.2)),
+                                  //   child: DateTimeField(
+                                  //     format: format,
+                                  //     onShowPicker: (context, currentValue) async {
+                                  //       return showDatePicker(
+                                  //           context: context,
+                                  //           firstDate: DateTime(1900),
+                                  //           initialDate: currentValue ?? DateTime.now(),
+                                  //           lastDate: DateTime(2100));
+                                  //     },
+                                  //     controller: birthdatePerson,
+                                  //     onChanged: (value) {
+                                  //       // debugPrint('ok----------------------------  ${DateFormat('dd/MM/yyyy hh:mm a').format(value)}');
+                                  //       // vistoria.vis_datahora = DateFormat('dd/MM/yyyy hh:mm a').format(value);
+                                  //         birthdatePerson.text = DateFormat('dd/MM/yyyy').format(value);
+                                          
+                                  //         // setState(() {
+                                  //         //   fakeperson.fakepersonfields.fpBirthDate = DateFormat('yyyy-mm-dd').format(value);
+                                  //         // });  
+
+                                        
+                                  //     },
+                                  //     decoration: InputDecoration(
+                                  //         labelText: 'Data de reagendamento',
+                                  //         labelStyle: textStyle,
+                                  //         border: OutlineInputBorder(
+                                  //             borderRadius: BorderRadius.circular(5.0))),
+                                  //   ),
+
+                                  // ),
+
                                   SizedBox(
                                     height: 15,
                                   ),
+
                                   Container(
                                     width: (MediaQuery.of(context).size.width /
                                         (1.2)),
@@ -419,6 +526,8 @@ class _FakepersonformScreenState extends State<FakepersonformScreen> {
                                                   BorderRadius.circular(5.0))),
                                     ),
                                   ),
+
+                                  
                                 ],
                               ),
                             ))

@@ -261,15 +261,15 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Container(
           padding: const EdgeInsets.all(0.0),
           child: SizedBox(
-            height: (MediaQuery.of(context).size.height / (8.8)),
+            height: (MediaQuery.of(context).size.height / (8)),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 CachedNetworkImage(
                   imageUrl:"https://render.imoalert.com.br/600x320/jpg/https://fakeperson.cloudf.com.br${fakepersonList[position].fakepersonfields.fpImage}",
                   imageBuilder: (context, imageProvider) => Container(
-                    width: (MediaQuery.of(context).size.width / (4.7)),
-                    height: (MediaQuery.of(context).size.height / (10.1)),
+                    width: (MediaQuery.of(context).size.width / (4)),
+                    height: (MediaQuery.of(context).size.height / (8.5)),
                     decoration: BoxDecoration(
                       borderRadius: new BorderRadius.circular(7),
                       image: DecorationImage(
