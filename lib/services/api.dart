@@ -73,29 +73,32 @@ class Services {
       'Content-Type': 'application/json',
       'Cookie': 'sessionid=${prefs.getString('sessionid')}'
     };
-    var response = await http.get(url_api + '/api/userfakeperson/?search=&limit=10000',
-        headers: header);
-    // final response = await http.get('https://jsonplaceholder.typicode.com/albums/1');
-    Map mapResponse = json.decode(response.body);
 
-    if (response.statusCode == 200) {
-      prefs.setBool('statuslogin', true);
-      for (Map res in mapResponse['fakePersons']) {
-        print(res['pk']);
-        await fakepersonList.add(Fakeperson.fromJson(res));
+    try {
+      var response = await http.get(
+          url_api + '/api/userfakeperson/?search=&limit=10000',
+          headers: header);
+      // final response = await http.get('https://jsonplaceholder.typicode.com/albums/1');
+      Map mapResponse = json.decode(response.body);
+
+      if (response.statusCode == 200) {
+        prefs.setBool('statuslogin', true);
+        for (Map res in mapResponse['fakePersons']) {
+          print(res['pk']);
+          await fakepersonList.add(Fakeperson.fromJson(res));
+        }
+      } else {
+        prefs.setBool('statuslogin', false);
+        prefs.setString('msg_login', mapResponse['msg']);
       }
-    } else {
-      prefs.setBool('statuslogin', false);
-      prefs.setString('msg_login', mapResponse['msg']);
+    } catch (e) {
+      return fakepersonList;
     }
     await prefs.commit();
     return fakepersonList;
   }
 
   static Future<bool> updateFakeperson(Fakeperson fakeperson) async {
-    print(fakeperson.toJson());
-    // return true;
-
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var header = {
       'Content-Type': 'application/json',
@@ -106,7 +109,6 @@ class Services {
     var response = await http.put(url_api + '/api/userfakeperson/',
         headers: header, body: _body);
 
-    print(response.statusCode);
     if (response.statusCode == 200) {
       return true;
     } else if (response.statusCode == 403) {
@@ -126,29 +128,34 @@ class Services {
     var header = {
       'Content-Type': 'application/json',
     };
-    var response = await http.get(url_api + '/api/?gender=${type}', headers: header);
+    try {
+      var response =
+          await http.get(url_api + '/api/?gender=${type}', headers: header);
 
-    Map mapResponse = json.decode(response.body);
+      Map mapResponse = json.decode(response.body);
 
-    if (response.statusCode == 200) {
-      mapResponse['fp_gender'] = mapResponse['person']['gender'];
-      mapResponse['fp_image'] = mapResponse['person']['image'];
-      mapResponse['fp_cpf'] = mapResponse['person']['cpf'];
-      mapResponse['fp_fullName'] = mapResponse['person']['fullName'];
-      mapResponse['fp_email'] = mapResponse['person']['email'];
-      mapResponse['fp_age'] = mapResponse['person']['age'];
-      mapResponse['fp_birthDate'] = mapResponse['person']['birthDate'];
-      mapResponse['fp_latitude'] = '';
-      mapResponse['fp_longitude'] = '';
-      mapResponse['fp_description'] = '';
+      if (response.statusCode == 200) {
+        mapResponse['fp_gender'] = mapResponse['person']['gender'];
+        mapResponse['fp_image'] = mapResponse['person']['image'];
+        mapResponse['fp_cpf'] = mapResponse['person']['cpf'];
+        mapResponse['fp_fullName'] = mapResponse['person']['fullName'];
+        mapResponse['fp_email'] = mapResponse['person']['email'];
+        mapResponse['fp_age'] = mapResponse['person']['age'];
+        mapResponse['fp_birthDate'] = mapResponse['person']['birthDate'];
+        mapResponse['fp_latitude'] = '';
+        mapResponse['fp_longitude'] = '';
+        mapResponse['fp_description'] = '';
 
-      _fakepersonfields = FakepersonFields.fromJson(mapResponse);
-    } else if (response.statusCode == 403) {
-      prefs.setBool('statuslogin', false);
-      prefs.setString('msg_login', mapResponse['msg']);
-      await prefs.commit();
-    } else {
-      return null;
+        _fakepersonfields = FakepersonFields.fromJson(mapResponse);
+      } else if (response.statusCode == 403) {
+        prefs.setBool('statuslogin', false);
+        prefs.setString('msg_login', mapResponse['msg']);
+        await prefs.commit();
+      } else {
+        return null;
+      }
+    } catch (e) {
+      return _fakepersonfields;
     }
     return _fakepersonfields;
   }
@@ -159,8 +166,6 @@ class Services {
       'Content-Type': 'application/json',
     };
     var response = await http.get(url_api + '/api/cpf/', headers: header);
-
-    print(response.statusCode);
 
     Map mapResponse = json.decode(response.body);
     if (response.statusCode == 200) {
@@ -175,13 +180,13 @@ class Services {
     }
   }
 
-  static Future<String> getnewName() async {
+  static Future<String> getnewName(String gender) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var header = {
       'Content-Type': 'application/json',
     };
-    var response =
-        await http.get(url_api + '/api/fullName/?gender=M', headers: header);
+    var response = await http.get(url_api + '/api/fullName/?gender=${gender}',
+        headers: header);
 
     print(response.statusCode);
 
@@ -221,13 +226,13 @@ class Services {
     }
   }
 
-  static Future<String> getRandomeimg() async {
+  static Future<String> getRandomeimg(String gender) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var header = {
       'Content-Type': 'application/json',
     };
-    var response =
-        await http.get(url_api + '/api/image/?gender=M', headers: header);
+    var response = await http.get(url_api + '/api/image/?gender=${gender}',
+        headers: header);
 
     print(response.statusCode);
 
@@ -249,8 +254,7 @@ class Services {
     var header = {
       'Content-Type': 'application/json',
     };
-    var response =
-        await http.get(url_api + '/api/age', headers: header);
+    var response = await http.get(url_api + '/api/age', headers: header);
 
     print(response.statusCode);
 
@@ -268,29 +272,99 @@ class Services {
     }
   }
 
-  
-
   static Future<String> getdeleteperson(int pk) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var header = {
       'Content-Type': 'application/json',
       'Cookie': 'sessionid=${prefs.getString('sessionid')}'
     };
-    var response = await http.delete(url_api + '/api/userfakeperson/?pk=${pk}',headers: header);
-    print('Deletando registro do banco de dados ${response.statusCode}');
-    Map mapResponse = json.decode(response.body);
+    try {
+      var response = await http
+          .delete(url_api + '/api/userfakeperson/?pk=${pk}', headers: header);
+      print('Deletando registro do banco de dados ${response.statusCode}');
+      Map mapResponse = json.decode(response.body);
 
-    if (response.statusCode == 200) {
-      print(mapResponse.toString());
-      return mapResponse['msg'];
-    } else if (response.statusCode == 403) {
-      prefs.setBool('statuslogin', false);
-      prefs.setString('msg_login', mapResponse['msg']);
-      await prefs.commit();
-      return '';
-    } else {
+      if (response.statusCode == 200) {
+        print(mapResponse.toString());
+        return mapResponse['msg'];
+      } else if (response.statusCode == 403) {
+        prefs.setBool('statuslogin', false);
+        prefs.setString('msg_login', mapResponse['msg']);
+        await prefs.commit();
+        return '';
+      } else {
+        return '';
+      }
+    } catch (e) {
       return '';
     }
+  }
 
+  static Future<bool> changePassword(Map data) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var header = {
+      'Content-Type': 'application/json',
+      'Cookie': 'sessionid=${prefs.getString('sessionid')}'
+    };
+
+    Map newMap = {"fields": data};
+
+    try {
+      var _body = json.encode(newMap);
+      var response = await http.post(
+          'https://fakeperson.cloudf.com.br/api/login',
+          headers: header,
+          body: _body);
+      // var response = await http.post(url_api + '/api/login', headers: header, body: _body);
+      Map mapResponse = json.decode(response.body);
+      print(response.statusCode);
+    } catch (e) {
+      print('---------- $e');
+    }
+    // print('Trocando registro do banco de dados ${mapsResponse['msg']}');
+    // if (response.statusCode == 200) {
+    //   prefs.setString('sessionid', mapResponse['sessionid']);
+    //   prefs.setString('msg_login', mapResponse['msg']);
+    //   prefs.setBool('statuslogin', true);
+    //   await prefs.commit();
+    //   return true;
+    // }else{
+    //   prefs.setBool('statuslogin', false);
+    //   await prefs.commit();
+    //   return false;
+    // }
+    return false;
+  }
+
+  static Future<bool> changeUserinformation(Map data) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var header = {
+      'Content-Type': 'application/json',
+      'Cookie': 'sessionid=${prefs.getString('sessionid')}'
+    };
+
+    Map newMap = {"fields": data};
+
+    try {
+      var _body = json.encode(newMap);
+      var response = await http.post(url_api + '/api/profile', headers: header, body: _body);
+      Map mapResponse = json.decode(response.body);
+      print(response.statusCode);
+    } catch (e) {
+      print('---------- $e');
+    }
+    // print('Trocando registro do banco de dados ${mapsResponse['msg']}');
+    // if (response.statusCode == 200) {
+    //   prefs.setString('sessionid', mapResponse['sessionid']);
+    //   prefs.setString('msg_login', mapResponse['msg']);
+    //   prefs.setBool('statuslogin', true);
+    //   await prefs.commit();
+    //   return true;
+    // }else{
+    //   prefs.setBool('statuslogin', false);
+    //   await prefs.commit();
+    //   return false;
+    // }
+    return false;
   }
 }

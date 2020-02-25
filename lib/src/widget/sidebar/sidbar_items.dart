@@ -10,7 +10,7 @@ class SidebarItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.fromLTRB(0.0, 10, 30.0, 0),
+      padding: EdgeInsets.fromLTRB(35, 10, 0.8, 0),
       child: InkWell(
           splashColor: Colors.blueAccent,
           onTap: onTap,
@@ -18,16 +18,16 @@ class SidebarItem extends StatelessWidget {
             color: Theme.of(context).primaryColor,
             height: 40,
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Row(
                   children: <Widget>[
-                    Icon(icon, color: Colors.orange),
+                    Icon(icon, color: Color(0xFFfc5185)),
                     Padding(
-                      padding: const EdgeInsets.all(0.0),
+                      padding: const EdgeInsets.all(8.0),
                       child: Text(text,
                           style: TextStyle(
-                              fontSize: 18.0,
+                              fontSize: 16.0,
                               color: Colors.white,
                               fontWeight: FontWeight.bold)),
                     ),

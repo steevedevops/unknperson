@@ -65,7 +65,6 @@ class _FakepersonformScreenState extends State<FakepersonformScreen> {
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
             _saveData();
-
           },
           backgroundColor: Theme.of(context).primaryColor,
           child: Icon(Icons.save),
@@ -86,8 +85,7 @@ class _FakepersonformScreenState extends State<FakepersonformScreen> {
                       Center(
                           child: InkWell(
                               onTap: () async {
-                                var resimg = await Services.getRandomeimg();
-
+                                var resimg = await Services.getRandomeimg(fakeperson.fakepersonfields.fpGender);
                                 setState(() {
                                   fakeperson.fakepersonfields.fpImage = resimg;
                                 });
@@ -161,7 +159,7 @@ class _FakepersonformScreenState extends State<FakepersonformScreen> {
                                         suffixIcon: InkWell(
                                             onTap: () async {
                                               var resfulname =
-                                                  await Services.getnewName();
+                                                  await Services.getnewName(fakeperson.fakepersonfields.fpGender);
 
                                               setState(() {
                                                 fakeperson.fakepersonfields
@@ -184,6 +182,7 @@ class _FakepersonformScreenState extends State<FakepersonformScreen> {
                                               child: Icon(
                                                 Icons.refresh,
                                                 size: 25.0,
+                                                color: Color(0xFFfc5185)
                                               ),
                                             ))),
                                   ),
@@ -240,6 +239,7 @@ class _FakepersonformScreenState extends State<FakepersonformScreen> {
                                               ),
                                               child: Icon(
                                                 Icons.refresh,
+                                                color: Color(0xFFfc5185),
                                                 size: 25.0,
                                               ),
                                             ))),
@@ -299,6 +299,7 @@ class _FakepersonformScreenState extends State<FakepersonformScreen> {
                                               child: Icon(
                                                 Icons.refresh,
                                                 size: 25.0,
+                                                color: Color(0xFFfc5185)
                                               ),
                                             ))),
                                   ),
@@ -352,6 +353,7 @@ class _FakepersonformScreenState extends State<FakepersonformScreen> {
                                               ),
                                               child: Icon(
                                                 Icons.refresh,
+                                                color: Color(0xFFfc5185),
                                                 size: 25.0,
                                               ),
                                             ))),

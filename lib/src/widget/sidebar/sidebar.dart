@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:unknperson/src/screen/home.dart';
 import 'package:unknperson/src/screen/login.dart';
 import 'package:unknperson/services/api.dart';
+import 'package:unknperson/src/screen/privacidade-form.dart';
+import 'package:unknperson/src/screen/userinformation-form.dart';
 import 'package:unknperson/src/widget/sidebar/sidbar_items.dart';
 
 class Sidebar extends StatelessWidget {
@@ -18,71 +21,99 @@ class Sidebar extends StatelessWidget {
           children: <Widget>[
             SafeArea(
                 child: Container(
-                    child: Center(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Container(
-                    padding: EdgeInsets.fromLTRB(0.0, 35.0, 10.0, 30.0),
-                    child: Text("UNKN",
+                    padding: EdgeInsets.fromLTRB(0.0, 50.5, 0.0, 0.0),
+                    child: Text("UNKNOW",
                         style: TextStyle(
-                          fontSize: 25.0,
+                          fontSize: 30.0,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        )),
-                  ),
-                  Container(
-                    child: ListTile(
-                        title: Center(
-                          heightFactor: 2.0,
-                          child: Text('${this.username}',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 21,
-                                  fontWeight: FontWeight.w800)),
-                        ),
-                        subtitle: Center(
-                          child: Text('${this.email}',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w800)),
+                          color: Color(0xFFfc5185),
                         )),
                   ),
                   SizedBox(
                     height: 32,
                   ),
-                  SidebarItem(null, "Inicio", () {}),
+                  InkWell(
+                    onTap: (){
+                      Navigator.pop(context);
+                    Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => UserinformationsScreen()));
+                    },
+                    child:
+                  ListTile(
+                    title: Text('${this.username}',
+                        maxLines: 1,
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w800)),
+                    subtitle: Text('${this.email}',
+                        maxLines: 1,
+                        style: TextStyle(
+                            color: Color(0xFFf0f0f0),
+                            fontSize: 13,
+                            fontWeight: FontWeight.w800)),
+                    leading: CircleAvatar(
+                      backgroundColor: Color(0xFFfc5185),
+                      child: Icon(
+                        Icons.perm_identity,
+                        color: Colors.white,
+                      ),
+                      radius: 40,
+                    ),
+                  )),
                   Divider(
-                    height: 30,
+                    height: 50,
                     thickness: 0.5,
                     color: Colors.white.withOpacity(0.3),
                     endIndent: 20,
                     indent: 20,
                   ),
-                  SidebarItem(null, "About", () {}),
+                  SidebarItem(Icons.home, "Home", () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => HomeScreen(),
+                        ));
+                  }),
+                  SidebarItem(Icons.lock_outline, "Privacidade", () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => PrivacidadeScreen()));
+                  }),
                   Divider(
-                    height: 30,
+                    height: 64,
                     thickness: 0.5,
                     color: Colors.white.withOpacity(0.3),
                     endIndent: 20,
                     indent: 20,
                   ),
-                  SidebarItem(null, "Sair", () async {
-                    SharedPreferences prefs = await SharedPreferences.getInstance();
+                  SidebarItem(Icons.settings, "Configurações", () {}),
+                  SidebarItem(Icons.exit_to_app, "Sair", () async {
+                    
+                    SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
                     try {
-                      var usuario = await Services.getlogout();                                      
+                      var usuario = await Services.getlogout();
+                      Navigator.pop(context);
                       Navigator.push(
-                          context, MaterialPageRoute(builder: (context) => LoginScreen()));
-                      
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => LoginScreen()));
                     } catch (e) {
                       print(e);
                     }
-                                        
                   }),
                 ],
               ),
-            ))),
+            )),
           ],
         ),
       )),

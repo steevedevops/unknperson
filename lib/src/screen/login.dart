@@ -41,7 +41,7 @@ class _LoginScreenState extends State<LoginScreen> {
               child: new Container(
                   height: MediaQuery.of(context).size.height,
                   decoration: BoxDecoration(
-                    color: Color(0xff3E6FC1),
+                    color: Theme.of(context).primaryColor,
                   ),
                   child: Container(
                     child: Center(
@@ -51,8 +51,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         Text(
                           'Log in',
                           style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 42.0,
+                              color: Color(0xFFfc5185),
+                              fontSize: 45.0,
                               fontWeight: FontWeight.bold,
                               fontFamily: "WorkSansBold"),
                         ),
@@ -62,6 +62,17 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         Container(
                             decoration: new BoxDecoration(
+                                                      boxShadow: [
+                              BoxShadow(
+                                color: Colors.black26,
+                                spreadRadius: 10,
+                                blurRadius: 30,
+                                offset: Offset(1, 3), // changes position of shadow
+                              ),
+                            ],
+
+
+
                               color: Colors.white,
                               borderRadius: new BorderRadius.circular(23),
                             ),
@@ -74,14 +85,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                   Container(
                                     width: MediaQuery.of(context).size.width,
                                     padding: EdgeInsets.fromLTRB(
-                                        25.0, 30.0, 0.0, 10.0),
+                                        30.0, 30.0, 0.0, 10.0),
                                     // decoration: BoxDecoration(color: Colors.red),
                                     child: Text(
                                       'User name',
                                       style: TextStyle(
-                                          fontSize: 13.0,
+                                          fontSize: 14.0,
                                           fontWeight: FontWeight.bold,
-                                          color: Color(0xff3E6FC1),
+                                          color: Color(0xFFfc5185),
                                           fontFamily: "arial"),
                                     ),
                                   ),
@@ -107,14 +118,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                   Container(
                                     width: MediaQuery.of(context).size.width,
                                     padding: EdgeInsets.fromLTRB(
-                                        25.0, 30.0, 0.0, 10.0),
+                                        30.0, 30.0, 0.0, 10.0),
                                     // decoration: BoxDecoration(color: Colors.red),
                                     child: Text(
                                       'Password',
                                       style: TextStyle(
-                                          fontSize: 13.0,
+                                          fontSize: 14.0,
                                           fontWeight: FontWeight.bold,
-                                          color: Color(0xff3E6FC1),
+                                          color: Color(0xFFfc5185),
                                           fontFamily: "arial"),
                                     ),
                                   ),
@@ -131,8 +142,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                       obscureText: true,
                                       style: textStyle,
                                       decoration: InputDecoration(
+                                        
                                           labelStyle: textStyle,
                                           border: OutlineInputBorder(
+                                            
                                               borderRadius:
                                                   BorderRadius.circular(5.0))),
                                     ),
@@ -156,8 +169,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                                 .validate()) {
                                               _doLogin();
                                             }
-                                          },
-                                          color: Theme.of(context).primaryColor,
+                                          },                                    
+                                          color: Color(0xFFfc5185),
                                           padding: EdgeInsets.all(15.0),
                                           child: Row(
                                             mainAxisAlignment:

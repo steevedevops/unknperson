@@ -70,6 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
           heroTag: "Searchmedidor",
           backgroundColor: Theme.of(context).primaryColor,
           mini: true,
+          
           child: Icon(Icons.person),
           onPressed: () {
             navigateToAddperson('M');
@@ -95,15 +96,8 @@ class _HomeScreenState extends State<HomeScreen> {
           child: UnicornDialer(
               orientation: UnicornOrientation.VERTICAL,
               parentButtonBackground: Theme.of(context).primaryColor,
-              parentButton: Icon(Icons.add),
-              childButtons: childButtons)),
-                // floatingActionButton: FloatingActionButton(
-                //   onPressed: () async {
-                //     navigateToAddperson();
-                //   },
-                //   backgroundColor: Theme.of(context).primaryColor,
-                //   child: Icon(Icons.add),
-                // ),
+              parentButton: Icon(Icons.add, color: Color(0xFFfc5185)),
+              childButtons: childButtons)),                
                 body: Scrollbar(
                   child: getHomeListView()
                 )
@@ -392,7 +386,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Icon(
                         Icons.close,
                         size: 28.0,
-                        color: Colors.grey,
+                        color: Color(0xFFfc5185)
                       ),
                     ))),
               ],
