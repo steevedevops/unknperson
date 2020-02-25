@@ -9,7 +9,7 @@ import 'package:http/http.dart' as http;
 import '../models/FakepersonFields.dart';
 
 class Services {
-  static final url_api = 'http://70c03a0d.ngrok.io';
+  static final url_api = 'https://fakeperson.cloudf.com.br';
 
   static Future<Usuario> getlogin(Map data) async {
     var _usuario;
@@ -29,6 +29,7 @@ class Services {
       prefs.setString('fullname', mapResponse['fullName']);
       prefs.setString('email', data['email']);
       prefs.setString('sessionid', mapResponse['sessionid']);
+      prefs.setString('url_api', url_api);
       prefs.setBool('statuslogin', true);
 
       _usuario = Usuario.fromJson(mapResponse);
@@ -72,7 +73,7 @@ class Services {
       'Content-Type': 'application/json',
       'Cookie': 'sessionid=${prefs.getString('sessionid')}'
     };
-    var response = await http.get(url_api + '/api/userfakeperson/?search=&limit=1000',
+    var response = await http.get(url_api + '/api/userfakeperson/?search=&limit=10000',
         headers: header);
     // final response = await http.get('https://jsonplaceholder.typicode.com/albums/1');
     Map mapResponse = json.decode(response.body);
@@ -119,13 +120,13 @@ class Services {
     }
   }
 
-  static Future<FakepersonFields> getnewFakeperson() async {
+  static Future<FakepersonFields> getnewFakeperson(String type) async {
     var _fakepersonfields;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var header = {
       'Content-Type': 'application/json',
     };
-    var response = await http.get(url_api + '/api/?gender=M', headers: header);
+    var response = await http.get(url_api + '/api/?gender=${type}', headers: header);
 
     Map mapResponse = json.decode(response.body);
 
@@ -242,6 +243,32 @@ class Services {
       return '';
     }
   }
+
+  static Future<Map> getnewAge() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var header = {
+      'Content-Type': 'application/json',
+    };
+    var response =
+        await http.get(url_api + '/api/age', headers: header);
+
+    print(response.statusCode);
+
+    Map mapResponse = json.decode(response.body);
+
+    if (response.statusCode == 200) {
+      return mapResponse;
+    } else if (response.statusCode == 403) {
+      prefs.setBool('statuslogin', false);
+      prefs.setString('msg_login', mapResponse['msg']);
+      await prefs.commit();
+      return {};
+    } else {
+      return {};
+    }
+  }
+
+  
 
   static Future<String> getdeleteperson(int pk) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

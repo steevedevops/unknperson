@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:unknperson/screen/login.dart';
+import 'package:unknperson/src/screen/login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {

@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unknperson/models/Fakeperson.dart';
 import 'package:unknperson/models/FakepersonFields.dart';
 import 'package:unknperson/services/api.dart';
@@ -16,6 +17,7 @@ class FakepersonformScreen extends StatefulWidget {
 
 class _FakepersonformScreenState extends State<FakepersonformScreen> {
   Fakeperson fakeperson = Fakeperson();
+  String url_api;
   FakepersonFields fakepersonFields = FakepersonFields();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   var maskFormatter = new MaskTextInputFormatter(
@@ -35,6 +37,7 @@ class _FakepersonformScreenState extends State<FakepersonformScreen> {
     if (widget.fakeperson != null) {
       fakeperson = Fakeperson.fromJson(widget.fakeperson.toJson());
     }
+    _getUrl();
   }
 
   @override
@@ -91,19 +94,18 @@ class _FakepersonformScreenState extends State<FakepersonformScreen> {
                               },
                               child: Container(
                                 width:
-                                    (MediaQuery.of(context).size.width / (2.6)),
-                                height: 160.3,
+                                    (MediaQuery.of(context).size.width / (2.8)),
+                                height: (MediaQuery.of(context).size.width / (2.8)),
                                 padding: EdgeInsets.all(10.0),
                                 child: CachedNetworkImage(
-                                  // imageUrl: "http://70c03a0d.ngrok.io${fakeperson.fakepersonfields != null ? fakeperson.fakepersonfields.fpImage : ''}",
-                                  imageUrl: "",
+                                  imageUrl: "https://render.imoalert.com.br/600x320/jpg/https://fakeperson.cloudf.com.br${fakeperson.fakepersonfields != null ? fakeperson.fakepersonfields.fpImage : ''}",
                                   imageBuilder: (context, imageProvider) =>
                                       Container(
                                     width: (MediaQuery.of(context).size.width /
                                         (4.7)),
                                     decoration: BoxDecoration(
                                       borderRadius:
-                                          new BorderRadius.circular(70),
+                                          new BorderRadius.circular(14),
                                       image: DecorationImage(
                                         image: imageProvider,
                                         fit: BoxFit.cover,
@@ -114,11 +116,11 @@ class _FakepersonformScreenState extends State<FakepersonformScreen> {
                                       CircularProgressIndicator(),
                                   errorWidget: (context, url, error) =>
                                       Container(
-                                    width: (MediaQuery.of(context).size.width /
-                                        (4.7)),
+                                    // width: (MediaQuery.of(context).size.width /
+                                    //     (4.7)),
                                     decoration: BoxDecoration(
                                       borderRadius:
-                                          new BorderRadius.circular(70),
+                                          new BorderRadius.circular(14),
                                         image: DecorationImage(
                                             image: AssetImage(
                                                 'lib/assets/images/no-image.jpg'),
@@ -170,12 +172,12 @@ class _FakepersonformScreenState extends State<FakepersonformScreen> {
                                               height: (MediaQuery.of(context)
                                                       .size
                                                       .height /
-                                                  12.5),
+                                                  12.4),
                                               decoration: BoxDecoration(
                                                 border: Border(
                                                   left: BorderSide(
                                                     color: Colors.black38,
-                                                    width: 2,
+                                                    width: 1,
                                                   ),
                                                 ),
                                               ),
@@ -227,12 +229,12 @@ class _FakepersonformScreenState extends State<FakepersonformScreen> {
                                               height: (MediaQuery.of(context)
                                                       .size
                                                       .height /
-                                                  12.5),
+                                                  12.4),
                                               decoration: BoxDecoration(
                                                 border: Border(
                                                   left: BorderSide(
                                                     color: Colors.black38,
-                                                    width: 2,
+                                                    width: 1,
                                                   ),
                                                 ),
                                               ),
@@ -285,12 +287,12 @@ class _FakepersonformScreenState extends State<FakepersonformScreen> {
                                               height: (MediaQuery.of(context)
                                                       .size
                                                       .height /
-                                                  12.5),
+                                                  12.4),
                                               decoration: BoxDecoration(
                                                 border: Border(
                                                   left: BorderSide(
                                                     color: Colors.black38,
-                                                    width: 2,
+                                                    width: 1,
                                                   ),
                                                 ),
                                               ),
@@ -328,17 +330,23 @@ class _FakepersonformScreenState extends State<FakepersonformScreen> {
                                             borderRadius:
                                                 BorderRadius.circular(5.0)),
                                         suffixIcon: InkWell(
-                                            onTap: () {},
+                                            onTap: () async {
+                                              var resage = await Services.getnewAge();
+                                              setState(() {
+                                                fakeperson.fakepersonfields.fpAge = resage['age'];
+                                                fakeperson.fakepersonfields.fpBirthDate = resage['birthDate'];
+                                              });
+                                            },
                                             child: Container(
                                               height: (MediaQuery.of(context)
                                                       .size
                                                       .height /
-                                                  12.5),
+                                                  12.4),
                                               decoration: BoxDecoration(
                                                 border: Border(
                                                   left: BorderSide(
                                                     color: Colors.black38,
-                                                    width: 2,
+                                                    width: 1,
                                                   ),
                                                 ),
                                               ),
@@ -392,9 +400,15 @@ class _FakepersonformScreenState extends State<FakepersonformScreen> {
     Navigator.pop(context, true);
   }
 
+  _getUrl() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      this.url_api = prefs.getString('url_api');
+    });
+  }
+
   Future<void> _saveData() async {
     if (fakeperson.pk != null) {
-      print('Atualizando informacoes ${fakeperson.fakepersonfields.fpCpf} ');
       var result = await Services.updateFakeperson(fakeperson);
 
       if (result) {
