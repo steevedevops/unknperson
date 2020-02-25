@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unknperson/models/Fakeperson.dart';
 import 'package:unknperson/models/FakepersonFields.dart';
-import 'package:unknperson/models/Usuario.dart';
+import 'package:unknperson/models/UserLogin.dart';
 import 'package:http/http.dart' as http;
 
 import '../models/FakepersonFields.dart';
@@ -84,7 +84,6 @@ class Services {
       if (response.statusCode == 200) {
         prefs.setBool('statuslogin', true);
         for (Map res in mapResponse['fakePersons']) {
-          print(res['pk']);
           await fakepersonList.add(Fakeperson.fromJson(res));
         }
       } else {
@@ -187,9 +186,6 @@ class Services {
     };
     var response = await http.get(url_api + '/api/fullName/?gender=${gender}',
         headers: header);
-
-    print(response.statusCode);
-
     Map mapResponse = json.decode(response.body);
     if (response.statusCode == 200) {
       return mapResponse['fullName'];
@@ -210,9 +206,6 @@ class Services {
     };
     var response =
         await http.get(url_api + '/api/email/?name=${name}', headers: header);
-
-    print(response.statusCode);
-
     Map mapResponse = json.decode(response.body);
     if (response.statusCode == 200) {
       return mapResponse['email'];
@@ -234,8 +227,6 @@ class Services {
     var response = await http.get(url_api + '/api/image/?gender=${gender}',
         headers: header);
 
-    print(response.statusCode);
-
     Map mapResponse = json.decode(response.body);
     if (response.statusCode == 200) {
       return mapResponse['image'];
@@ -255,8 +246,6 @@ class Services {
       'Content-Type': 'application/json',
     };
     var response = await http.get(url_api + '/api/age', headers: header);
-
-    print(response.statusCode);
 
     Map mapResponse = json.decode(response.body);
 
@@ -281,7 +270,6 @@ class Services {
     try {
       var response = await http
           .delete(url_api + '/api/userfakeperson/?pk=${pk}', headers: header);
-      print('Deletando registro do banco de dados ${response.statusCode}');
       Map mapResponse = json.decode(response.body);
 
       if (response.statusCode == 200) {
@@ -311,29 +299,57 @@ class Services {
 
     try {
       var _body = json.encode(newMap);
-      var response = await http.post(
-          'https://fakeperson.cloudf.com.br/api/login',
-          headers: header,
-          body: _body);
-      // var response = await http.post(url_api + '/api/login', headers: header, body: _body);
+      var response = await http.post(url_api + '/api/profile/', headers: header, body: _body);
       Map mapResponse = json.decode(response.body);
-      print(response.statusCode);
+
+      if (response.statusCode == 200) {
+        prefs.setString('sessionid', mapResponse['sessionid']);
+        prefs.setString('msg_login', mapResponse['msg']);
+        prefs.setBool('statuslogin', true);
+        await prefs.commit();
+        return true;
+      }else{
+        prefs.setString('msg_login', mapResponse['error']);        
+      }
     } catch (e) {
-      print('---------- $e');
+      prefs.setString('msg_login', e);
+      await prefs.commit();
+      return false;
     }
-    // print('Trocando registro do banco de dados ${mapsResponse['msg']}');
-    // if (response.statusCode == 200) {
-    //   prefs.setString('sessionid', mapResponse['sessionid']);
-    //   prefs.setString('msg_login', mapResponse['msg']);
-    //   prefs.setBool('statuslogin', true);
-    //   await prefs.commit();
-    //   return true;
-    // }else{
-    //   prefs.setBool('statuslogin', false);
-    //   await prefs.commit();
-    //   return false;
-    // }
+    await prefs.commit();
     return false;
+  }
+
+
+
+  static Future<Map> getUserinformation() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var header = {
+      'Content-Type': 'application/json',
+      'Cookie': 'sessionid=${prefs.getString('sessionid')}'
+    };
+
+    // "first_name":"Fábio viado",
+		// "last_name": "Telmo Machado Dornel",
+		// "username":"dornel.fabio2@gmail.com"
+
+    // "username": "steeve@metasig.com.br",
+    // "first_name": "Steeve",
+    // "last_name": "Gay",
+    var response = await http.get(url_api + '/api/profile/', headers: header);
+    Map mapResponse = json.decode(response.body);
+
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      return mapResponse['user']['fields'];
+    } else if (response.statusCode == 403) {
+      prefs.setBool('statuslogin', false);
+      prefs.setString('msg_login', mapResponse['msg']);
+      await prefs.commit();
+      return {};
+    } else {
+      return {};
+    }
   }
 
   static Future<bool> changeUserinformation(Map data) async {
@@ -344,27 +360,29 @@ class Services {
     };
 
     Map newMap = {"fields": data};
-
+ 
     try {
       var _body = json.encode(newMap);
-      var response = await http.post(url_api + '/api/profile', headers: header, body: _body);
+      var response = await http.put(url_api + '/api/profile/', headers: header, body: _body);
       Map mapResponse = json.decode(response.body);
+
       print(response.statusCode);
+
+      if (response.statusCode == 200) {
+        await prefs.setString('fullname', data['first_name']+' '+data['last_name']);
+        await prefs.setString('email', data['username']);
+        await prefs.setString('msg_login', mapResponse['msg']);
+        await prefs.commit();
+        return true;
+      }else{
+        prefs.setString('msg_login', mapResponse['error']);        
+      }
     } catch (e) {
-      print('---------- $e');
+      prefs.setString('msg_login', e);
+      await prefs.commit();
+      return false;
     }
-    // print('Trocando registro do banco de dados ${mapsResponse['msg']}');
-    // if (response.statusCode == 200) {
-    //   prefs.setString('sessionid', mapResponse['sessionid']);
-    //   prefs.setString('msg_login', mapResponse['msg']);
-    //   prefs.setBool('statuslogin', true);
-    //   await prefs.commit();
-    //   return true;
-    // }else{
-    //   prefs.setBool('statuslogin', false);
-    //   await prefs.commit();
-    //   return false;
-    // }
+    await prefs.commit();
     return false;
   }
 }

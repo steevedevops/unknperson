@@ -31,9 +31,8 @@ class _LoginScreenState extends State<LoginScreen> {
     TextStyle textStyle = Theme.of(context).textTheme.title;
 
     // username.text = "dornel.fabio2@gmail.com";
-    username.text = "steeve@metasig.com.br";
-    password.text = "mastermaster";
-
+    // username.text = "steeve@metasig.com.br";
+    // password.text = "mastermaster";
     return Scaffold(
       key: _scaffoldKey,
       body: ModalProgressHUD(
@@ -62,17 +61,15 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         Container(
                             decoration: new BoxDecoration(
-                                                      boxShadow: [
-                              BoxShadow(
-                                color: Colors.black26,
-                                spreadRadius: 10,
-                                blurRadius: 30,
-                                offset: Offset(1, 3), // changes position of shadow
-                              ),
-                            ],
-
-
-
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black26,
+                                  spreadRadius: 10,
+                                  blurRadius: 30,
+                                  offset: Offset(
+                                      1, 3), // changes position of shadow
+                                ),
+                              ],
                               color: Colors.white,
                               borderRadius: new BorderRadius.circular(23),
                             ),
@@ -108,7 +105,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                       controller: username,
                                       style: textStyle,
                                       decoration: InputDecoration(
-                                          // labelText: 'Chave',
                                           labelStyle: textStyle,
                                           border: OutlineInputBorder(
                                               borderRadius:
@@ -142,10 +138,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                       obscureText: true,
                                       style: textStyle,
                                       decoration: InputDecoration(
-                                        
                                           labelStyle: textStyle,
                                           border: OutlineInputBorder(
-                                            
                                               borderRadius:
                                                   BorderRadius.circular(5.0))),
                                     ),
@@ -169,7 +163,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                                 .validate()) {
                                               _doLogin();
                                             }
-                                          },                                    
+                                          },
                                           color: Color(0xFFfc5185),
                                           padding: EdgeInsets.all(15.0),
                                           child: Row(
@@ -213,7 +207,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
       var usuario = await Services.getlogin(data);
 
-      print('Usuario logado ${prefs.getBool('statuslogin')}'  );
+      print('Usuario logado ${prefs.getBool('statuslogin')}');
 
       if (prefs.getBool('statuslogin')) {
         Navigator.push(
@@ -232,21 +226,19 @@ class _LoginScreenState extends State<LoginScreen> {
       content: Text(
         value,
         textAlign: TextAlign.center,
-        style: TextStyle(
-            fontSize: 13.0,
-            fontFamily: "WorkSansSemiBold"),
+        style: TextStyle(fontSize: 13.0, fontFamily: "WorkSansSemiBold"),
       ),
       duration: Duration(seconds: 2),
     );
-    _scaffoldKey.currentState
-        .showSnackBar(snackBar);
+    _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
   Future<void> _verifyLogado() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
       if (prefs.getBool('statuslogin')) {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => HomeScreen()));
       }
     } catch (e) {
       print(e);

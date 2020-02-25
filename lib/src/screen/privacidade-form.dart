@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unknperson/services/api.dart';
 
@@ -9,13 +10,20 @@ class PrivacidadeScreen extends StatefulWidget {
 
 class _PrivacidadeScreenState extends State<PrivacidadeScreen> {
   final _formKey = GlobalKey<FormState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   TextEditingController currentpassword = TextEditingController();
   TextEditingController newpassword = TextEditingController();
+  bool _loadState = false;
 
   @override
   Widget build(BuildContext context) {
     TextStyle textStyle = Theme.of(context).textTheme.title;
-    return Scaffold(
+    return ModalProgressHUD(
+    
+    child:
+    
+    Scaffold(
+        key: _scaffoldKey,
         appBar: AppBar(title: Text('Trocar senha')),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
@@ -56,6 +64,7 @@ class _PrivacidadeScreenState extends State<PrivacidadeScreen> {
                         return null;
                       },
                       controller: currentpassword,
+                      obscureText: true,
                       style: textStyle,
                       decoration: InputDecoration(
                         labelText: 'Current Password',
@@ -80,6 +89,7 @@ class _PrivacidadeScreenState extends State<PrivacidadeScreen> {
                       },
                       controller: newpassword,
                       style: textStyle,
+                      obscureText: true,
                       decoration: InputDecoration(
                         labelText: 'New password',
                         labelStyle: textStyle,
@@ -90,7 +100,10 @@ class _PrivacidadeScreenState extends State<PrivacidadeScreen> {
                   ),
                 ],
               ))),
-        )));
+        )
+        )
+        ), inAsyncCall: _loadState,
+        );
   }
 
   Future<void> _updatePassword() async {
@@ -100,12 +113,60 @@ class _PrivacidadeScreenState extends State<PrivacidadeScreen> {
 		  "password": newpassword.text
 	  };
 
-    var sucesse = await Services.changePassword(data);
-    
+    setState(() {
+     _loadState = true;
+    });
 
+    var sucesse = await Services.changePassword(data);
+  
     if (sucesse){
-      Navigator.pop(context);
+      _neverSatisfied(prefs.getString('msg_login'));
+    }else{
+      showInSnackBar(context, prefs.getString('msg_login'));
     }
-    debugPrint('dados para funcionaso ${prefs.getString('msg_login')}');
+     setState(() {
+     _loadState = false;
+    });
   }
+
+  void showInSnackBar(BuildContext context, String value) {
+    final snackBar = SnackBar(
+      content: Text(
+        value,
+        textAlign: TextAlign.center,
+        style: TextStyle(fontSize: 13.0, fontFamily: "WorkSansSemiBold"),
+      ),
+      duration: Duration(seconds: 2),
+    );
+    _scaffoldKey.currentState.showSnackBar(snackBar);
+  }
+
+  Future<void> _neverSatisfied(String msg) async {
+  return showDialog<void>(
+    context: context,
+    barrierDismissible: false, // user must tap button!
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Sucesso!'),
+        content: SingleChildScrollView(
+          child: ListBody(
+            children: <Widget>[
+              Text('$msg'),
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          FlatButton(
+            child: Text('Ok'),
+            onPressed: () {
+              Navigator.of(context).pop();
+              currentpassword.text = '';
+              newpassword.text = '';
+            },
+          ),
+        ],
+      );
+    },
+  );
+} 
 }

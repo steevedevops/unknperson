@@ -115,8 +115,8 @@ class _HomeScreenState extends State<HomeScreen> {
   void _getuserinformation() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      name = prefs.getString('fullname');
-      email = prefs.getString('email');
+      this.name = prefs.getString('fullname');
+      this.email = prefs.getString('email');
     });
   }
 
@@ -258,7 +258,6 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Container(
           padding: const EdgeInsets.all(0.0),
           child: SizedBox(
-            // height: 80,
             height: (MediaQuery.of(context).size.height / (8.8)),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -331,7 +330,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   style: const TextStyle(
-                                    fontSize: 14.0,
+                                    fontSize: 12.0,
                                     color: Colors.black54,
                                   ),
                                 ),

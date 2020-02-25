@@ -36,36 +36,36 @@ class Sidebar extends StatelessWidget {
                     height: 32,
                   ),
                   InkWell(
-                    onTap: (){
-                      Navigator.pop(context);
-                    Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => UserinformationsScreen()));
-                    },
-                    child:
-                  ListTile(
-                    title: Text('${this.username}',
-                        maxLines: 1,
-                        style: TextStyle(
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    UserinformationsScreen()));
+                      },
+                      child: ListTile(
+                        title: Text('${this.username}',
+                            maxLines: 1,
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w800)),
+                        subtitle: Text('${this.email}',
+                            maxLines: 1,
+                            style: TextStyle(
+                                color: Color(0xFFf0f0f0),
+                                fontSize: 13,
+                                fontWeight: FontWeight.w800)),
+                        leading: CircleAvatar(
+                          backgroundColor: Color(0xFFfc5185),
+                          child: Icon(
+                            Icons.perm_identity,
                             color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w800)),
-                    subtitle: Text('${this.email}',
-                        maxLines: 1,
-                        style: TextStyle(
-                            color: Color(0xFFf0f0f0),
-                            fontSize: 13,
-                            fontWeight: FontWeight.w800)),
-                    leading: CircleAvatar(
-                      backgroundColor: Color(0xFFfc5185),
-                      child: Icon(
-                        Icons.perm_identity,
-                        color: Colors.white,
-                      ),
-                      radius: 40,
-                    ),
-                  )),
+                          ),
+                          radius: 40,
+                        ),
+                      )),
                   Divider(
                     height: 50,
                     thickness: 0.5,
@@ -84,9 +84,9 @@ class Sidebar extends StatelessWidget {
                   SidebarItem(Icons.lock_outline, "Privacidade", () {
                     Navigator.pop(context);
                     Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => PrivacidadeScreen()));
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => PrivacidadeScreen()));
                   }),
                   Divider(
                     height: 64,
@@ -97,7 +97,6 @@ class Sidebar extends StatelessWidget {
                   ),
                   SidebarItem(Icons.settings, "Configurações", () {}),
                   SidebarItem(Icons.exit_to_app, "Sair", () async {
-                    
                     SharedPreferences prefs =
                         await SharedPreferences.getInstance();
                     try {
