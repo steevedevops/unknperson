@@ -30,8 +30,8 @@ class _LoginScreenState extends State<LoginScreen> {
     TextStyle textStyle = Theme.of(context).textTheme.title;
 
     // username.text = "dornel.fabio2@gmail.com";
-    username.text = "steeve@metasig.com.br";
-    password.text = "mastermaster";
+    // username.text = "steeve@metasig.com.br";
+    // password.text = "mastermaster";
     return Scaffold(
       key: _scaffoldKey,
       body: ModalProgressHUD(
