@@ -1,4 +1,3 @@
-import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -198,13 +197,13 @@ class _LoginScreenState extends State<LoginScreen> {
   _doLogin() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     // SharedPreferences.setMockInitialValues({});
-    var conected = await Connectivity().checkConnectivity();
+    // var conected = await Connectivity().checkConnectivity();
 
     setState(() {
       _loadState = true;
     });
 
-    if (conected != ConnectivityResult.none) {
+    // if (conected != ConnectivityResult.none) {
       Map data = {"email": username.text, "password": password.text};
 
       var usuario = await Services.getlogin(data);
@@ -220,7 +219,7 @@ class _LoginScreenState extends State<LoginScreen> {
       setState(() {
         _loadState = false;
       });
-    }
+    // }
   }
 
   void showInSnackBar(BuildContext context, String value) {
