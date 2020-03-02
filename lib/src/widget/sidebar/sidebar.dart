@@ -3,7 +3,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unknperson/src/screen/configuracao.dart';
 import 'package:unknperson/src/screen/home.dart';
 import 'package:unknperson/src/screen/login.dart';
-import 'package:unknperson/services/api.dart';
 import 'package:unknperson/src/screen/privacidade-form.dart';
 import 'package:unknperson/src/screen/userinformation-form.dart';
 import 'package:unknperson/src/widget/sidebar/sidbar_items.dart';

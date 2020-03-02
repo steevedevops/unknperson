@@ -9,7 +9,8 @@ import 'package:http/http.dart' as http;
 import '../models/FakepersonFields.dart';
 
 class Services {
-  static final url_api = 'https://fakeperson.cloudf.com.br';
+  // static final url_api = 'https://fakeperson.cloudf.com.br';
+  static final url_api = 'http://38612e94.ngrok.io';
 
   static Future<Usuario> getlogin(Map data) async {
     var _usuario;
@@ -41,6 +42,126 @@ class Services {
     }
     await prefs.commit();
     return _usuario;
+  }
+
+  static Future<bool> getsigup(Map data) async {
+    var _usuario;
+    var header = {'Content-Type': 'application/json'};
+    var _body = json.encode(data);
+    var response = await http.put(url_api + '/api/subcribe/', headers: header, body: _body);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.clear();
+
+    Map mapResponse = json.decode(response.body);
+
+    if (response.statusCode == 200) {
+      print(mapResponse.toString());
+      //Save data on persisten information
+      prefs.setString('email', data['email']);
+      prefs.setString('msg_login', mapResponse['msg']);
+      prefs.setBool('statuslogin', true);
+      await prefs.commit();
+      return true;
+    } else {
+      prefs.setBool('statuslogin', false);
+      prefs.setString('msg_login', mapResponse['msg']);
+      await prefs.commit();
+      return false;
+    }
+    
+  }
+
+  static Future<bool> getActivate(Map data) async {
+    print(data.toString());
+    var header = {'Content-Type': 'application/json'};
+    var _body = json.encode(data);
+    var response = await http.post(url_api + '/api/subcribe/', headers: header, body: _body);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.clear();
+
+    Map mapResponse = json.decode(response.body);
+
+    prefs.setBool('statuslogin', false);
+    await prefs.commit();
+
+    if (response.statusCode == 200) {
+      prefs.setString('msg_login', mapResponse['msg']);  
+      return true;
+    } else {
+      prefs.setString('msg_login', mapResponse['msg']);
+      return false;
+    }
+  }
+
+  static Future<bool> resendCodActivations(Map data) async {
+    var header = {'Content-Type': 'application/json'};
+    var _body = json.encode(data);
+    var response = await http.post(url_api + '/api/resendTokenActication/', headers: header, body: _body);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    Map mapResponse = json.decode(response.body);
+
+    if (response.statusCode == 200) {
+      print(mapResponse.toString());
+      prefs.setString('msg_login', mapResponse['msg']);
+      prefs.setBool('statuslogin', true);
+      await prefs.commit();
+      return true;
+    } else {
+      prefs.setBool('statuslogin', false);
+      prefs.setString('msg_login', mapResponse['msg']);
+      await prefs.commit();
+      return false;
+    }
+    
+  }
+
+  static Future<bool> recoverypass(Map data) async {
+    var header = {'Content-Type': 'application/json'};
+    var _body = json.encode(data);
+    var response = await http.put(url_api + '/api/accountRecovery/', headers: header, body: _body);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.clear();
+
+    Map mapResponse = json.decode(response.body);
+
+    if (response.statusCode == 200) {
+      prefs.setString('email', data['email']);
+      prefs.setString('msg_login', mapResponse['msg']);
+      prefs.setBool('statuslogin', false);
+      await prefs.commit();
+      return true;
+    } else {
+      prefs.setBool('statuslogin', false);
+      prefs.setString('msg_login', mapResponse['msg']);
+      await prefs.commit();
+      return false;
+    }
+  }
+
+  static Future<bool> recoverycode(Map data) async {
+    var header = {'Content-Type': 'application/json'};
+    var _body = json.encode(data);
+    var response = await http.post(url_api + '/api/accountRecovery/', headers: header, body: _body);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.clear();
+
+    Map mapResponse = json.decode(response.body);
+
+    print(mapResponse);
+
+    if (response.statusCode == 200) {
+    //   print(mapResponse.toString());
+      prefs.setString('msg_login', mapResponse['msg']);
+      prefs.setBool('statuslogin', false);
+      await prefs.commit();
+      return true;
+    } else {
+      prefs.setBool('statuslogin', false);
+      prefs.setString('msg_login', mapResponse['msg']);
+      await prefs.commit();
+      return false;
+    }
   }
 
   static Future<Usuario> getlogout() async {

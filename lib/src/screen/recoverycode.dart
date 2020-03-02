@@ -1,31 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:unknperson/src/screen/activeacount.dart';
-import 'package:unknperson/src/screen/home.dart';
 import 'package:unknperson/services/api.dart';
+import 'package:unknperson/src/screen/login.dart';
 import 'package:unknperson/src/screen/recoverypass.dart';
-import 'package:unknperson/src/screen/subscribe.dart';
 
-class LoginScreen extends StatefulWidget {
+class RecoverycodeScreen extends StatefulWidget {
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _RecoverycodeScreenState createState() => _RecoverycodeScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _RecoverycodeScreenState extends State<RecoverycodeScreen> {
   final _formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  // final _scaffoldKey = GlobalKey<ScaffoldState>();
-  TextEditingController username = TextEditingController();
-  TextEditingController password = TextEditingController();
+  
+  TextEditingController coderecove = TextEditingController();
+  TextEditingController newpassword = TextEditingController();
 
   bool _loadState = false;
+  String emailuse;
 
   @override
   Future<void> initState() {
     // TODO: implement initState
     super.initState();
-    _verifyLogado();
+    _setEmail();
   }
 
   @override
@@ -34,10 +33,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
     return WillPopScope(
         onWillPop: () async {
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          if (prefs.getBool('statuslogin')) {
-            Future.value(false);
-          }
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => RecoverypassScreen()));
         },
         child: Scaffold(
           key: _scaffoldKey,
@@ -53,18 +50,6 @@ class _LoginScreenState extends State<LoginScreen> {
                             child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            Text(
-                              'Log in',
-                              style: TextStyle(
-                                  color: Color(0xFFfc5185),
-                                  fontSize: 45.0,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: "WorkSansBold"),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.all(12),
-                              child: Container(),
-                            ),
                             Container(
                                 decoration: new BoxDecoration(
                                   boxShadow: [
@@ -80,7 +65,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   borderRadius: new BorderRadius.circular(23),
                                 ),
                                 width: MediaQuery.of(context).size.width / 1.3,
-                                height: 360,
+                                height: 380,
                                 child: Form(
                                   key: _formKey,
                                   child: Column(
@@ -90,18 +75,56 @@ class _LoginScreenState extends State<LoginScreen> {
                                               0.0, 25.0, 0.0, 0.0)),
                                       Container(
                                         width: 250.0,
+                                        child: Text(
+                                          'Email to recovery: ${emailuse}',
+                                          style: TextStyle(
+                                              fontSize: 14.0,
+                                              fontFamily: "WorkSansSemiBold"),
+                                        ),
+                                      ),
+                                      Padding(
+                                          padding: EdgeInsets.fromLTRB(
+                                              0.0, 25.0, 0.0, 0.0)),
+
+                                      Container(
+                                        width: 250.0,
                                         child: TextFormField(
                                           validator: (value) {
                                             if (value.isEmpty) {
-                                              return;
+                                              return 'Campo nāo pode estar vazío';
                                             }
                                             return null;
                                           },
-                                          controller: username,
+                                          controller: coderecove,
                                           style: textStyle,
                                           decoration: InputDecoration(
                                               labelStyle: textStyle,
-                                              labelText: 'Username',
+                                              labelText: 'Code',
+                                              border: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          5.0))),
+                                        ),
+                                      ),
+                                      Padding(
+                                          padding: EdgeInsets.fromLTRB(
+                                              0.0, 25.0, 0.0, 0.0)),
+
+                                      Container(
+                                        width: 250.0,
+                                        child: TextFormField(
+                                          validator: (value) {
+                                            if (value.isEmpty) {
+                                              return 'Campo nāo pode estar vazío';
+                                            }
+                                            return null;
+                                          },
+                                          controller: newpassword,
+                                          obscureText: true,
+                                          style: textStyle,
+                                          decoration: InputDecoration(
+                                              labelStyle: textStyle,
+                                              labelText: 'New password',
                                               border: OutlineInputBorder(
                                                   borderRadius:
                                                       BorderRadius.circular(
@@ -112,32 +135,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                           padding: EdgeInsets.fromLTRB(
                                               0.0, 25.0, 0.0, 0.0)),
                                       Container(
-                                        width: 250.0,
-                                        child: TextFormField(
-                                          validator: (value) {
-                                            if (value.isEmpty) {
-                                              // return;
-                                            }
-                                            return null;
-                                          },
-                                          controller: password,
-                                          obscureText: true,
-                                          style: textStyle,
-                                          decoration: InputDecoration(
-                                              labelStyle: textStyle,
-                                              labelText: 'Password',
-                                              border: OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          5.0))),
-                                        ),
-                                      ),
-                                      Padding(
-                                          padding: EdgeInsets.fromLTRB(
-                                              0.0, 10.0, 0.0, 0.0)),
-                                      Container(
                                           width: 250,
-                                          height: 80,
                                           child: Center(
                                             child: FlatButton(
                                               shape: new RoundedRectangleBorder(
@@ -149,7 +147,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                                     .validate());
                                                 if (_formKey.currentState
                                                     .validate()) {
-                                                  _doLogin();
+                                                  _doRecoverypass();
                                                 }
                                               },
                                               color: Color(0xFFfc5185),
@@ -159,46 +157,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                                     MainAxisAlignment.center,
                                                 children: <Widget>[
                                                   Text(
-                                                    "Entrar",
-                                                    maxLines: 1,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    style: const TextStyle(
-                                                        fontSize: 18.0,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Colors.white),
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                          )),
-                                      Container(
-                                          width: 250,
-                                          height: 80,
-                                          child: Center(
-                                            child: FlatButton(
-                                              shape: new RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      new BorderRadius.circular(
-                                                          5.0)),
-                                              onPressed: () async {
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            SubscribeScreen()));
-                                                //  Navigator.push(
-                                                // context, MaterialPageRoute(builder: (context) => ActiveacountScreen()));
-                                              },
-                                              color: Color(0xFFfc5185),
-                                              padding: EdgeInsets.all(15.0),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: <Widget>[
-                                                  Text(
-                                                    "Sign Up",
+                                                    "Recovery pass",
                                                     maxLines: 1,
                                                     overflow:
                                                         TextOverflow.ellipsis,
@@ -215,23 +174,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                     ],
                                   ),
                                 )),
-                            Padding(
-                              padding: EdgeInsets.all(12),
-                              child: Container(),
-                            ),
-                            GestureDetector(
-                              onTap: (){
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => RecoverypassScreen()));
-                              },
-                              child: Text(
-                                'Esqueceu a sua senha ?',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16.0,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: "WorkSansBold"),
-                              ),
-                            )
                           ],
                         )),
                       ))),
@@ -239,32 +181,35 @@ class _LoginScreenState extends State<LoginScreen> {
         ));
   }
 
-  _doLogin() async {
+  Future<void> _setEmail() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    // SharedPreferences.setMockInitialValues({});
-    // var conected = await Connectivity().checkConnectivity();
-
+    setState(() {
+      emailuse = prefs.getString('email');
+    });
+  }
+  _doRecoverypass() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       _loadState = true;
     });
 
-    // if (conected != ConnectivityResult.none) {
-    Map data = {"email": username.text, "password": password.text};
+    Map data = {
+      "email": emailuse,
+	    "code": coderecove.text,
+	    "password": newpassword.text
+    };
 
-    var usuario = await Services.getlogin(data);
+    var recovery = await Services.recoverycode(data);
 
-    print('Usuario logado ${prefs.getBool('statuslogin')}');
-
-    if (prefs.getBool('statuslogin')) {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => HomeScreen()));
+    if (recovery) {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
     } else {
       showInSnackBar(context, prefs.getString('msg_login'));
     }
+
     setState(() {
       _loadState = false;
     });
-    // }
   }
 
   void showInSnackBar(BuildContext context, String value) {
@@ -277,37 +222,5 @@ class _LoginScreenState extends State<LoginScreen> {
       duration: Duration(seconds: 2),
     );
     _scaffoldKey.currentState.showSnackBar(snackBar);
-  }
-
-  Future<void> _verifyLogado() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    if (prefs.getString('mobileclose') != null) {
-      prefs.remove('mobileclose');
-      setState(() {
-        _loadState = true;
-      });
-      try {
-        await Services.getlogout();
-        print('Saindo do aplicativo');
-      } catch (e) {
-        setState(() {
-          _loadState = false;
-        });
-        showInSnackBar(context, e);
-      }
-      setState(() {
-        _loadState = false;
-      });
-    }
-
-    try {
-      if (prefs.getBool('statuslogin')) {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => HomeScreen()));
-      }
-    } catch (e) {
-      showInSnackBar(context, e);
-    }
   }
 }

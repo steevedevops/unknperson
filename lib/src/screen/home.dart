@@ -21,18 +21,15 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-
- 
 class _HomeScreenState extends State<HomeScreen> {
   String name;
   String email;
   String url_api;
   bool _loadState = false;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  FakepersonFields fakepersonFields  = FakepersonFields();
+  FakepersonFields fakepersonFields = FakepersonFields();
   List<Fakeperson> fakepersonList;
   ScrollController _scrollController;
-
 
   int countlist = 0;
 
@@ -70,7 +67,6 @@ class _HomeScreenState extends State<HomeScreen> {
           heroTag: "Searchmedidor",
           backgroundColor: Theme.of(context).primaryColor,
           mini: true,
-          
           child: Icon(Icons.person),
           onPressed: () {
             navigateToAddperson('M');
@@ -92,16 +88,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 drawer: Sidebar(username: this.name, email: this.email),
                 floatingActionButton: Visibility(
-          visible: true,
-          child: UnicornDialer(
-              orientation: UnicornOrientation.VERTICAL,
-              parentButtonBackground: Theme.of(context).primaryColor,
-              parentButton: Icon(Icons.add, color: Color(0xFFfc5185)),
-              childButtons: childButtons)),                
-                body: Scrollbar(
-                  child: getHomeListView()
-                )
-            ),
+                    visible: true,
+                    child: UnicornDialer(
+                        orientation: UnicornOrientation.VERTICAL,
+                        parentButtonBackground: Theme.of(context).primaryColor,
+                        parentButton: Icon(Icons.add, color: Color(0xFFfc5185)),
+                        childButtons: childButtons)),
+                body: Scrollbar(child: getHomeListView())),
             inAsyncCall: _loadState));
   }
 
@@ -174,9 +167,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     _loadState = true;
                   });
                   Navigator.pop(context);
-                  await Services.getdeleteperson(pk);                  
+                  await Services.getdeleteperson(pk);
                   _updatepersonListview();
-                  
                 },
               )
             ],
@@ -188,9 +180,13 @@ class _HomeScreenState extends State<HomeScreen> {
     return Padding(
         padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
         child: ListView.builder(
+
           itemCount: countlist,
           controller: _scrollController,
           itemBuilder: (BuildContext context, int position) {
+            
+
+
             return InkWell(
                 onTap: () async {
                   // formatnumber(position);
@@ -222,24 +218,23 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _loadState = true;
     });
-    if(fakepersonfield != null){
-      result = await Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return FakepersonformScreen(
-        fakeperson: Fakeperson(
-          model: 'fakeperson.fakeperson',
-          fakepersonfields: fakepersonfield
-        ),
-      );
+    if (fakepersonfield != null) {
+      result =
+          await Navigator.push(context, MaterialPageRoute(builder: (context) {
+        return FakepersonformScreen(
+          fakeperson: Fakeperson(
+              model: 'fakeperson.fakeperson',
+              fakepersonfields: fakepersonfield),
+        );
       }));
-
-    }else{
-      result = await Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return FakepersonformScreen(
-        fakeperson: Fakeperson(
-          model: 'fakeperson.fakeperson',
-          fakepersonfields: fakepersonFields
-        ),
-      );
+    } else {
+      result =
+          await Navigator.push(context, MaterialPageRoute(builder: (context) {
+        return FakepersonformScreen(
+          fakeperson: Fakeperson(
+              model: 'fakeperson.fakeperson',
+              fakepersonfields: fakepersonFields),
+        );
       }));
     }
 
@@ -266,28 +261,36 @@ class _HomeScreenState extends State<HomeScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 CachedNetworkImage(
-                  imageUrl:"https://render.imoalert.com.br/600x320/jpg/https://fakeperson.cloudf.com.br${fakepersonList[position].fakepersonfields.fpImage}",
-                  imageBuilder: (context, imageProvider) => Container(
-                    width: (MediaQuery.of(context).size.width / (4)),
-                    height: (MediaQuery.of(context).size.height / (8.5)),
-                    decoration: BoxDecoration(
-                      borderRadius: new BorderRadius.circular(7),
-                      image: DecorationImage(
-                        image: imageProvider,
-                        fit: BoxFit.cover,
+                      imageUrl: "https://render.imoalert.com.br/600x320/jpg/https://fakeperson.cloudf.com.br${fakepersonList[position].fakepersonfields.fpImage}",
+                      imageBuilder: (context, imageProvider) => Container(
+                        width: (MediaQuery.of(context).size.width / (4.3)),
+                        height: (MediaQuery.of(context).size.width / (4.2)),
+                        decoration: BoxDecoration(
+                          borderRadius: new BorderRadius.circular(7),
+                          image: DecorationImage(                            
+                            image: imageProvider, 
+                            fit: BoxFit.cover
+                          ),
+                        ),
+                      ),
+                      placeholder: (context, url) =>
+                      Container(
+                        width: (MediaQuery.of(context).size.width / (4.3)),
+                        height: (MediaQuery.of(context).size.width / (4.2)),
+                        child:Center(child: CircularProgressIndicator()), 
+                      ),                      
+                      errorWidget: (context, url, error) => Container(
+                        width: (MediaQuery.of(context).size.width / (4.3)),
+                        height: (MediaQuery.of(context).size.width / (4.2)),
+                        decoration: BoxDecoration(
+                          borderRadius: new BorderRadius.circular(7),
+                            image: DecorationImage(
+                                image:
+                                    AssetImage('lib/assets/images/noImage.jpg'),
+                                fit: BoxFit.cover)),
                       ),
                     ),
-                  ),
-                  placeholder: (context, url) => CircularProgressIndicator(),
-                  errorWidget: (context, url, error) => Container(
-                    width: (MediaQuery.of(context).size.width / (4.7)),
-                    height: (MediaQuery.of(context).size.height / (10.1)),
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                            image: AssetImage('lib/assets/images/no-image.jpg'),
-                            fit: BoxFit.fill)),
-                  ),
-                ),
+
                 Expanded(
                     flex: 2,
                     child: Padding(
@@ -358,7 +361,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       Container(
                                         width: 5,
                                       ),
-                                      AutoSizeText(                                        
+                                      AutoSizeText(
                                         Formatters.formatDateString(
                                             fakepersonList[position]
                                                 .fakepersonfields
@@ -381,16 +384,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 Padding(
                     padding: const EdgeInsets.all(5.0),
                     child: InkWell(
-                      onTap: () async {
-                        _showDialogDeletedMSG(fakepersonList[position].pk);
-                      },
-                    child: Center(
-                      child: Icon(
-                        Icons.close,
-                        size: 28.0,
-                        color: Color(0xFFfc5185)
-                      ),
-                    ))),
+                        onTap: () async {
+                          _showDialogDeletedMSG(fakepersonList[position].pk);
+                        },
+                        child: Center(
+                          child: Icon(Icons.close,
+                              size: 28.0, color: Color(0xFFfc5185)),
+                        ))),
               ],
             ),
           )),
@@ -422,9 +422,8 @@ class _HomeScreenState extends State<HomeScreen> {
     if (_scrollController.offset >=
             _scrollController.position.maxScrollExtent &&
         !_scrollController.position.outOfRange) {
-          // _updatepersonListview();
+      // _updatepersonListview();
       print("reach the bottom");
-      
     }
     if (_scrollController.offset <=
             _scrollController.position.minScrollExtent &&
