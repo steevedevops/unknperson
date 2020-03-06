@@ -30,6 +30,9 @@ class _HomeScreenState extends State<HomeScreen> {
   FakepersonFields fakepersonFields = FakepersonFields();
   List<Fakeperson> fakepersonList;
   ScrollController _scrollController;
+  List dadaTodelete = [];
+
+  bool _showdelete = false;
 
   int countlist = 0;
 
@@ -85,6 +88,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 key: _scaffoldKey,
                 appBar: new AppBar(
                   backgroundColor: Theme.of(context).primaryColor,
+                  actions: _showdelete ? <Widget>[
+                    IconButton(
+                      icon: Icon(Icons.delete, color: Colors.white),
+                      onPressed: () {
+                        print(dadaTodelete.toString());
+                      },
+                    )
+                  ]:null
                 ),
                 drawer: Sidebar(username: this.name, email: this.email),
                 floatingActionButton: Visibility(
@@ -180,28 +191,39 @@ class _HomeScreenState extends State<HomeScreen> {
     return Padding(
         padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
         child: ListView.builder(
-
           itemCount: countlist,
           controller: _scrollController,
           itemBuilder: (BuildContext context, int position) {
-            
-
-
             return InkWell(
-                onTap: () async {
-                  // formatnumber(position);
 
-                  bool result = await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => FakepersonformScreen(
-                                fakeperson: fakepersonList[position],
-                              )));
-                  _updatepersonListview();
-                  if (result == true) {/*Faca alima coisa*/}
+                onTap: () async {
+
+                  if(fakepersonList[position].isSelected){
+                    setState(() {
+                      _showdelete = !_showdelete;  
+                      fakepersonList[position].isSelected = false;
+                     });
+                  }else{
+                    bool result = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => FakepersonformScreen(
+                                  fakeperson: fakepersonList[position],
+                                )));
+                    _updatepersonListview();
+                    if (result == true) {/*Faca alima coisa*/}
+                  }
                 },
-                child: Container(
+                onLongPress: (){
+                  setState(() {
+                    _showdelete = !_showdelete;  
+                    fakepersonList[position].isSelected = true;
+                    dadaTodelete.add(fakepersonList[position].pk);
+                  });
+                },
+                child: Container(                  
                     child: Padding(
+                      
                   padding: EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 0.0),
                   child: _cardListpendentes(context, position),
                 )));
@@ -247,13 +269,17 @@ class _HomeScreenState extends State<HomeScreen> {
       padding: const EdgeInsets.fromLTRB(5.0, 0.0, 0.0, 15.0),
       decoration: BoxDecoration(
         border: Border(
+          
           bottom: BorderSide(
             color: Colors.black38,
+            // color: Colors.red[100],
             width: 0.4,
           ),
         ),
       ),
       child: Container(
+          // color: Colors.red[100],
+          color: fakepersonList[position].isSelected != null && fakepersonList[position].isSelected ? Colors.red[100] : Colors.white,
           padding: const EdgeInsets.all(0.0),
           child: SizedBox(
             height: (MediaQuery.of(context).size.height / (8)),
@@ -261,36 +287,32 @@ class _HomeScreenState extends State<HomeScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 CachedNetworkImage(
-                      imageUrl: "https://render.imoalert.com.br/600x320/jpg/https://fakeperson.cloudf.com.br${fakepersonList[position].fakepersonfields.fpImage}",
-                      imageBuilder: (context, imageProvider) => Container(
-                        width: (MediaQuery.of(context).size.width / (4.3)),
-                        height: (MediaQuery.of(context).size.width / (4.2)),
-                        decoration: BoxDecoration(
-                          borderRadius: new BorderRadius.circular(7),
-                          image: DecorationImage(                            
-                            image: imageProvider, 
-                            fit: BoxFit.cover
-                          ),
-                        ),
-                      ),
-                      placeholder: (context, url) =>
-                      Container(
-                        width: (MediaQuery.of(context).size.width / (4.3)),
-                        height: (MediaQuery.of(context).size.width / (4.2)),
-                        child:Center(child: CircularProgressIndicator()), 
-                      ),                      
-                      errorWidget: (context, url, error) => Container(
-                        width: (MediaQuery.of(context).size.width / (4.3)),
-                        height: (MediaQuery.of(context).size.width / (4.2)),
-                        decoration: BoxDecoration(
-                          borderRadius: new BorderRadius.circular(7),
-                            image: DecorationImage(
-                                image:
-                                    AssetImage('lib/assets/images/noImage.jpg'),
-                                fit: BoxFit.cover)),
-                      ),
+                  imageUrl:
+                      "https://render.imoalert.com.br/600x320/jpg/https://fakeperson.cloudf.com.br${fakepersonList[position].fakepersonfields.fpImage}",
+                  imageBuilder: (context, imageProvider) => Container(
+                    width: (MediaQuery.of(context).size.width / (4.3)),
+                    height: (MediaQuery.of(context).size.width / (4.2)),
+                    decoration: BoxDecoration(
+                      borderRadius: new BorderRadius.circular(7),
+                      image: DecorationImage(
+                          image: imageProvider, fit: BoxFit.cover),
                     ),
-
+                  ),
+                  placeholder: (context, url) => Container(
+                    width: (MediaQuery.of(context).size.width / (4.3)),
+                    height: (MediaQuery.of(context).size.width / (4.2)),
+                    child: Center(child: CircularProgressIndicator()),
+                  ),
+                  errorWidget: (context, url, error) => Container(
+                    width: (MediaQuery.of(context).size.width / (4.3)),
+                    height: (MediaQuery.of(context).size.width / (4.2)),
+                    decoration: BoxDecoration(
+                        borderRadius: new BorderRadius.circular(7),
+                        image: DecorationImage(
+                            image: AssetImage('lib/assets/images/noImage.jpg'),
+                            fit: BoxFit.cover)),
+                  ),
+                ),
                 Expanded(
                     flex: 2,
                     child: Padding(

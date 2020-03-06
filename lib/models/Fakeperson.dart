@@ -4,16 +4,17 @@ class Fakeperson {
   String model;
   int pk;
   FakepersonFields fakepersonfields;
+  bool isSelected;
 
-  Fakeperson({this.model, this.pk, this.fakepersonfields});
+  Fakeperson({this.model, this.pk, this.fakepersonfields, this.isSelected});
 
   Fakeperson.fromJson(Map<String, dynamic> json) {
     model = json['model'];
     if(json['pk'] != null){
       pk = json['pk'];
     }
-    fakepersonfields =
-        json['fields'] != null ? new FakepersonFields.fromJson(json['fields']) : null;
+    fakepersonfields = json['fields'] != null ? new FakepersonFields.fromJson(json['fields']) : null;
+    isSelected = json['isSelected'];;
   }
 
   Map<String, dynamic> toJson() {
@@ -26,6 +27,7 @@ class Fakeperson {
     if (this.fakepersonfields != null) {
       data['fields'] = this.fakepersonfields.toJson();
     }
+    data['isSelected'] = this.isSelected;
     return data;
   }
 }
