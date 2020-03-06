@@ -215,6 +215,8 @@ class _FakepersonformScreenState extends State<FakepersonformScreen> {
                                   SizedBox(
                                     height: 20,
                                   ),
+
+
                                   Container(
                                     width: (MediaQuery.of(context).size.width /
                                         (1.2)),
@@ -237,6 +239,7 @@ class _FakepersonformScreenState extends State<FakepersonformScreen> {
                                           border: OutlineInputBorder(
                                               borderRadius:
                                                   BorderRadius.circular(5.0)),
+                                                  
                                           suffixIcon: InkWell(
                                               onTap: () async {
                                                 setState(() {
@@ -271,9 +274,14 @@ class _FakepersonformScreenState extends State<FakepersonformScreen> {
                                                   color: Color(0xFFfc5185),
                                                   size: 25.0,
                                                 ),
-                                              ))),
+                                              )
+                                            )
+                                          ),
                                     ),
                                   ),
+
+
+
                                   SizedBox(
                                     height: 20,
                                   ),
@@ -395,7 +403,9 @@ class _FakepersonformScreenState extends State<FakepersonformScreen> {
                                                   color: Color(0xFFfc5185),
                                                   size: 25.0,
                                                 ),
-                                              ))),
+                                              )
+                                            )
+                                          ),
                                     ),
                                   ),
 

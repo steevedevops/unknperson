@@ -10,7 +10,7 @@ import '../models/FakepersonFields.dart';
 
 class Services {
   // static final url_api = 'https://fakeperson.cloudf.com.br';
-  static final url_api = 'http://38612e94.ngrok.io';
+  static final url_api = 'http://000b4df1.ngrok.io';
 
   static Future<Usuario> getlogin(Map data) async {
     var _usuario;

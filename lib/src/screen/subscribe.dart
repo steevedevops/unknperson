@@ -18,6 +18,7 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
   TextEditingController password = TextEditingController();
 
   bool _loadState = false;
+  bool _showPass = true;
 
   @override
   Future<void> initState() {
@@ -119,7 +120,7 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
                                             return null;
                                           },
                                           controller: password,
-                                          obscureText: true,
+                                          obscureText: _showPass,
                                           style: textStyle,
                                           decoration: InputDecoration(
                                               labelStyle: textStyle,
@@ -127,7 +128,41 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
                                               border: OutlineInputBorder(
                                                   borderRadius:
                                                       BorderRadius.circular(
-                                                          5.0))),
+                                                          5.0)),
+                                                          
+                                                          suffixIcon: InkWell(
+                                                  onTap: () async {
+                                                    setState(() {
+                                                      _showPass = !_showPass;
+                                                    });
+                                                  },
+                                                  child: Container(
+                                                    height:
+                                                        (MediaQuery.of(context)
+                                                                .size
+                                                                .height /
+                                                            12.4),
+                                                    decoration: BoxDecoration(
+                                                      border: Border(
+                                                        left: BorderSide(
+                                                          color: Colors.black38,
+                                                          width: 1,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    child: _showPass ? 
+                                                    Icon(
+                                                      Icons.remove_red_eye,
+                                                      color: Color(0xFFfc5185),
+                                                      size: 25.0,
+                                                    ) : Icon(
+                                                      Icons.visibility_off,
+                                                      color: Color(0xFFfc5185),
+                                                      size: 25.0,
+                                                    ),
+                                                  ))
+                                                          
+                                                          ),
                                         ),
                                       ),
                                       Padding(
