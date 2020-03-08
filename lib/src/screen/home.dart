@@ -47,7 +47,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     var childButtons = List<UnicornButton>();
-
     childButtons.add(UnicornButton(
         hasLabel: true,
         labelText: "Mulher",
@@ -55,7 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
           heroTag: "addgirl",
           backgroundColor: Theme.of(context).primaryColor,
           mini: true,
-          child: Icon(Icons.pregnant_woman),
+          child: Icon(Icons.local_library),
           onPressed: () {
             navigateToAddperson('F');
           },
@@ -82,9 +81,16 @@ class _HomeScreenState extends State<HomeScreen> {
           }
         },
         child: ModalProgressHUD(
-            child: new Scaffold(
+            child: Scaffold(
                 key: _scaffoldKey,
-                appBar: new AppBar(
+                floatingActionButton: Visibility(
+                    // visible: true,
+                    child: UnicornDialer(
+                        orientation: UnicornOrientation.VERTICAL,
+                        parentButtonBackground: Theme.of(context).primaryColor,
+                        parentButton: Icon(Icons.add, color: Color(0xFFfc5185)),
+                        childButtons: childButtons)),
+                appBar: AppBar(
                     backgroundColor: Theme.of(context).primaryColor,
                     actions: dadaTodelete.length > 0
                         ? <Widget>[
@@ -96,21 +102,16 @@ class _HomeScreenState extends State<HomeScreen> {
                                 });
                                 await Services.getbulkdeleteperson(
                                     dadaTodelete);
+                                dadaTodelete = [];
                                 _updatepersonListview();
                               },
                             )
                           ]
                         : null),
                 drawer: Sidebar(username: this.name, email: this.email),
-                floatingActionButton: Visibility(
-                    visible: true,
-                    child: UnicornDialer(
-                        orientation: UnicornOrientation.VERTICAL,
-                        parentButtonBackground: Theme.of(context).primaryColor,
-                        parentButton: Icon(Icons.add, color: Color(0xFFfc5185)),
-                        childButtons: childButtons)),
                 body: Scrollbar(child: getHomeListView())),
-            inAsyncCall: _loadState));
+            inAsyncCall: _loadState)
+          );
   }
 
   void showNotImplementedMessage() {
