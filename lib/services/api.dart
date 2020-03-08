@@ -10,7 +10,7 @@ import '../models/FakepersonFields.dart';
 
 class Services {
   // static final url_api = 'https://fakeperson.cloudf.com.br';
-  static final url_api = 'http://000b4df1.ngrok.io';
+  static final url_api = 'http://2b52f4c1.ngrok.io';
 
   static Future<Usuario> getlogin(Map data) async {
     var _usuario;
@@ -386,6 +386,34 @@ class Services {
     try {
       var response = await http
           .delete(url_api + '/api/userfakeperson/?pk=${pk}', headers: header);
+      Map mapResponse = json.decode(response.body);
+
+      if (response.statusCode == 200) {
+        print(mapResponse.toString());
+        return mapResponse['msg'];
+      } else if (response.statusCode == 403) {
+        prefs.setBool('statuslogin', false);
+        prefs.setString('msg_login', mapResponse['msg']);
+        await prefs.commit();
+        return '';
+      } else {
+        return '';
+      }
+    } catch (e) {
+      return '';
+    }
+  }
+
+  static Future<String> getbulkdeleteperson(List listpk) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var header = {
+      'Content-Type': 'application/json',
+      'Cookie': 'sessionid=${prefs.getString('sessionid')}'
+    };
+    Map newMap = {"pks": listpk};
+    try {
+      var _body = json.encode(newMap);
+      var response = await http.post(url_api + '/api/userfakeperson/', headers: header, body: _body);
       Map mapResponse = json.decode(response.body);
 
       if (response.statusCode == 200) {

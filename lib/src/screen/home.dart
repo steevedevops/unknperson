@@ -15,6 +15,7 @@ import '../../models/Fakeperson.dart';
 import '../../models/FakepersonFields.dart';
 import '../../services/api.dart';
 
+// https://medium.com/@gadepalliaditya1998/item-selection-in-list-view-on-tap-in-flutter-using-listview-builder-612f6608505a
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key key}) : super(key: key);
   @override
@@ -31,9 +32,6 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Fakeperson> fakepersonList;
   ScrollController _scrollController;
   List dadaTodelete = [];
-
-  bool _showdelete = false;
-
   int countlist = 0;
 
   @override
@@ -87,16 +85,22 @@ class _HomeScreenState extends State<HomeScreen> {
             child: new Scaffold(
                 key: _scaffoldKey,
                 appBar: new AppBar(
-                  backgroundColor: Theme.of(context).primaryColor,
-                  actions: _showdelete ? <Widget>[
-                    IconButton(
-                      icon: Icon(Icons.delete, color: Colors.white),
-                      onPressed: () {
-                        print(dadaTodelete.toString());
-                      },
-                    )
-                  ]:null
-                ),
+                    backgroundColor: Theme.of(context).primaryColor,
+                    actions: dadaTodelete.length > 0
+                        ? <Widget>[
+                            IconButton(
+                              icon: Icon(Icons.delete, color: Colors.white),
+                              onPressed: () async {
+                                setState(() {
+                                  _loadState = true;
+                                });
+                                await Services.getbulkdeleteperson(
+                                    dadaTodelete);
+                                _updatepersonListview();
+                              },
+                            )
+                          ]
+                        : null),
                 drawer: Sidebar(username: this.name, email: this.email),
                 floatingActionButton: Visibility(
                     visible: true,
@@ -195,15 +199,8 @@ class _HomeScreenState extends State<HomeScreen> {
           controller: _scrollController,
           itemBuilder: (BuildContext context, int position) {
             return InkWell(
-
                 onTap: () async {
-
-                  if(fakepersonList[position].isSelected){
-                    setState(() {
-                      _showdelete = !_showdelete;  
-                      fakepersonList[position].isSelected = false;
-                     });
-                  }else{
+                  if (dadaTodelete.length == 0) {
                     bool result = await Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -212,18 +209,37 @@ class _HomeScreenState extends State<HomeScreen> {
                                 )));
                     _updatepersonListview();
                     if (result == true) {/*Faca alima coisa*/}
+                  } else {
+                    if (fakepersonList[position].isSelected == null) {
+                      setState(() {
+                        fakepersonList[position].isSelected = true;
+                        dadaTodelete.add(fakepersonList[position].pk);
+                        dadaTodelete = dadaTodelete.toSet().toList();
+                      });
+                    } else {
+                      setState(() {
+                        fakepersonList[position].isSelected =
+                            !fakepersonList[position].isSelected;
+                        if (fakepersonList[position].isSelected) {
+                          dadaTodelete.add(fakepersonList[position].pk);
+                          dadaTodelete = dadaTodelete.toSet().toList();
+                        } else {
+                          dadaTodelete.remove(fakepersonList[position].pk);
+                          dadaTodelete = dadaTodelete.toSet().toList();
+                        }
+                      });
+                    }
                   }
                 },
-                onLongPress: (){
+                onLongPress: () {
                   setState(() {
-                    _showdelete = !_showdelete;  
                     fakepersonList[position].isSelected = true;
                     dadaTodelete.add(fakepersonList[position].pk);
+                    dadaTodelete = dadaTodelete.toSet().toList();
                   });
                 },
-                child: Container(                  
+                child: Container(
                     child: Padding(
-                      
                   padding: EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 0.0),
                   child: _cardListpendentes(context, position),
                 )));
@@ -269,7 +285,6 @@ class _HomeScreenState extends State<HomeScreen> {
       padding: const EdgeInsets.fromLTRB(5.0, 0.0, 0.0, 15.0),
       decoration: BoxDecoration(
         border: Border(
-          
           bottom: BorderSide(
             color: Colors.black38,
             // color: Colors.red[100],
@@ -279,7 +294,14 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       child: Container(
           // color: Colors.red[100],
-          color: fakepersonList[position].isSelected != null && fakepersonList[position].isSelected ? Colors.red[100] : Colors.white,
+          
+          decoration: BoxDecoration(
+            color: fakepersonList[position].isSelected != null &&
+                  fakepersonList[position].isSelected
+              ? Colors.red[100]
+              : Colors.white,
+            borderRadius: new BorderRadius.circular(7),
+          ),
           padding: const EdgeInsets.all(0.0),
           child: SizedBox(
             height: (MediaQuery.of(context).size.height / (8)),
